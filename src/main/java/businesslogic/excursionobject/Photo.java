@@ -13,12 +13,10 @@ public class Photo implements Description {
         this.pict = pict;
     }
 
-    @Override
     public String getContent() {
         return pict.toString();
     }
 
-    @Override
     public String getLabel() {
         return "Photo";
     }

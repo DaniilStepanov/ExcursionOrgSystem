@@ -5,12 +5,20 @@ package businesslogic.userfactory;
  */
 public class Vehicle {
 
-    Vehicle(String model, int mileage, int capacity, String numbers){
+    public Vehicle(String model, int mileage, int capacity, String numbers){
         this.model = model;
         this.mileage = mileage;
         this.capacity = capacity;
         this.numbers = numbers;
         isChecked = false;
+    }
+
+    public Vehicle(String model, int mileage, int capacity, String numbers, boolean isChecked){
+        this.model = model;
+        this.mileage = mileage;
+        this.capacity = capacity;
+        this.numbers = numbers;
+        this.isChecked = isChecked;
     }
 
     public String getModel(){return model;}
@@ -19,12 +27,8 @@ public class Vehicle {
     public String getNumbers(){return  numbers;}
     public boolean isChecked(){return isChecked;}
 
-    void checkVehicle(){
-        // CHECK VEHICLE
-        isChecked = true;
-    }
-
     void setNewMileage(int mileage){this.mileage = mileage;}
+    void setisChecked(boolean b){this.isChecked = b;}
 
     private String model;
     private int mileage;

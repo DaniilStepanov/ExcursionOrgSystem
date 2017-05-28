@@ -12,8 +12,13 @@ public class ExcursionObject {
     ExcursionObject(){
         di = new ArrayList<Description>();
     }
-    ExcursionObject(ArrayList<Description> di){
+    ExcursionObject(int objUID){
+        di = new ArrayList<Description>();
+        this.ObjUID = objUID;
+    }
+    ExcursionObject(ArrayList<Description> di, int objUID){
         this.di = di;
+        this.ObjUID = objUID;
     }
     public String getInfoFromExtSource(){
         /* */
@@ -26,13 +31,27 @@ public class ExcursionObject {
             //Get Content?
         }
     }
+
+    public void setNewUID(int uid) {
+        ObjUID = uid;
+    }
+    public int getObjUID(){ return ObjUID; }
+    public Description getDescription(int index){
+        return di.get(index);
+    }
+
     public void addText(String label, String text){
         di.add(new Text(label, text));
     }
+
+    public void addText(Text t){
+        di.add(t);
+    }
+
     public void addPhoto(String label, File file){
         di.add(new Photo(label, file));
     }
     public ArrayList<Description> getDescription(){return di;}
     ArrayList<Description> di;
-
+    int ObjUID;
 }

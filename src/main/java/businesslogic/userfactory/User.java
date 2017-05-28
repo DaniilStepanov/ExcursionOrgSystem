@@ -23,6 +23,9 @@ public class User {
     }
     public int getUID(){return UID;}
     public String getLogin(){return login;}
+    public int getMoney(){return money;}
+
+    public void setNewUID(int newUID){ UID = newUID;}
     public void setMoney(int money){this.money = money;}
     public void subMoney(int amount){
         money = money - amount;

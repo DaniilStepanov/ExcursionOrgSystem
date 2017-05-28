@@ -23,17 +23,32 @@ public class Organizator extends User {
             new RuntimeException("Didnt create an excursion");
         return excursion;}
 
-    public void createExcursion(){
-        excursion = ExcursionBuilder.createExcursion(this);
+    public void endExcursion(){
+        if(excursion.getDriver() != null) {
+            excursion.getDriver().setDriverFree();
+        }
+        excursion = null;
     }
 
-    public void setDriver(Driver d){
-        excursion.setDriver(d);
+    public boolean setDriver(Driver d){
+        if(d.isFree() && d.getVehicle().isChecked()){
+            excursion.setDriver(d);
+            return true;
+        }
+        else
+            return false;
+    }
+    public void setExcursion(Excursion e){
+        excursion = e;
     }
 
     public void payToDriver(Driver d, int sum){
-        Receipt rec = PaySystem.pay(this, d, sum);
+        Receipt rec = PaySystem.pay(excursion, sum);
         excursion.setPay(true, rec);
+    }
+
+    public void createExcursion(){
+        excursion = ExcursionBuilder.createExcursion(this);
     }
 
     private Excursion excursion;
