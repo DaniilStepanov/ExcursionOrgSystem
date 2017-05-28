@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="472.0" prefWidth="552.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controllers.BeginViewController">
+    <children>
+        <Button id="1" fx:id="signIn" alignment="CENTER" layoutX="53.0" layoutY="277.0" mnemonicParsing="false" onAction="#onClickButton" prefHeight="43.5" prefWidth="159.0" text="SignIn" textAlignment="CENTER" />
+      <Button fx:id="signUpUser" layoutX="312.0" layoutY="277.0" mnemonicParsing="false" onAction="#onSignUpClicked" prefHeight="44.0" prefWidth="159.0" text="SignUp" />
+      <TextField id="loginField" fx:id="loginField" layoutX="162.0" layoutY="139.0" prefHeight="25.0" prefWidth="229.0" />
+      <Text layoutX="162.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Login" wrappingWidth="58.13671875" />
+      <Text layoutX="162.0" layoutY="184.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" />
+      <PasswordField id="passField" fx:id="passField" layoutX="162.0" layoutY="196.0" prefHeight="25.0" prefWidth="229.0" />
+      <RadioButton fx:id="asUser" layoutX="312.0" layoutY="343.0" mnemonicParsing="false" text="As user">
+         <toggleGroup>
+            <ToggleGroup fx:id="group" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="asDriver" layoutX="312.0" layoutY="376.0" mnemonicParsing="false" text="As driver" toggleGroup="$group" />
+      <RadioButton fx:id="asOrg" layoutX="312.0" layoutY="410.0" mnemonicParsing="false" text="As organizator" toggleGroup="$group" />
+    </children>
+</AnchorPane>
