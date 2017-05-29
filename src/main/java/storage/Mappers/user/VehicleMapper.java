@@ -26,7 +26,22 @@ public class VehicleMapper {
     }
 
     public void addVehicle(Driver d, Vehicle v) throws SQLException {
-        if (!vcls.contains(v)) {
+        if(getDriversVehicle(d) != null){
+            String insertSQL = "UPDATE VEHICLES SET VEHICLES.model = ?, " +
+                    "VEHICLES.mileage =  ?," +
+                    "VEHICLES.capacity = ?," +
+                    "VEHICLES.numbers = ?, " +
+                    "VEHICLES.isChecked= ? WHERE VEHICLES.driversID = ?;";
+            PreparedStatement insertStatement = connection.prepareStatement(insertSQL);
+            insertStatement.setString(1, v.getModel());
+            insertStatement.setInt(2, v.getMileage());
+            insertStatement.setInt(3, v.getCapacity());
+            insertStatement.setString(4, v.getNumbers());
+            insertStatement.setBoolean(5, v.isChecked());
+            insertStatement.setInt(6, d.getUID());
+            insertStatement.executeUpdate();
+        }
+        else {
             String insertSQL = "INSERT INTO VEHICLES(VEHICLES.driversID, " +
                     "VEHICLES.model, VEHICLES.mileage," +
                     "VEHICLES.capacity, VEHICLES.numbers, VEHICLES.isChecked)" +

@@ -43,7 +43,7 @@ public class ExcursionObjectMapper implements MapperInterface<ExcursionObject> {
 
     public ExcursionObject findByLabel(String label) throws SQLException {
         for(int i = 0; i < objs.size(); ++i){
-            if(objs.get(i).getDescription(0).getLabel() == label)
+            if(objs.get(i).getDescription(0).getLabel().equals(label))
                 return objs.get(i);
         }
 
@@ -166,25 +166,14 @@ public class ExcursionObjectMapper implements MapperInterface<ExcursionObject> {
     public void updateWithExcursion(ExcursionObject item, int excID) throws SQLException {
         if (findByID(item.getObjUID()) == null){
             String query = "INSERT INTO EXCURSIONOBJECTS(EXCURSIONOBJECTS.uid," +
-                    "excursionobjects.description, excursionobjects.pict)" +
-                    "VALUES (?, ?, ?);";
+                    "excursionobjects.description, excursionobjects.pict, " +
+                    "excursionobjects.excID)" +
+                    "VALUES (?, ?, ?, ?);";
             PreparedStatement st = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             st.setInt(1, item.getObjUID());
             st.setString(2, item.getDescription(0).getLabel());
             st.setBlob(3, (Blob) null);
-            st.execute();
-        }
-        else {
-            String query = "UPDATE EXCURSIONOBJECTS SET " +
-                    "EXCURSIONOBJECTS.description = ?, " +
-                    "EXCURSIONOBJECTS.pict = ?," +
-                    "EXCURSIONOBJECTS.excID = ?" +
-                    "WHERE EXCURSIONOBJECTS.uid = ?;";
-            PreparedStatement st = connection.prepareStatement(query);
-            st.setString(1, item.getDescription(0).getLabel());
-            st.setBlob(2, (Blob) null);
-            st.setInt(3, excID);
-            st.setInt(4, item.getObjUID());
+            st.setInt(4, excID);
             st.execute();
             int uid = 0;
             ResultSet generatedKeys = st.getGeneratedKeys();
@@ -192,6 +181,25 @@ public class ExcursionObjectMapper implements MapperInterface<ExcursionObject> {
                 uid = (int) generatedKeys.getLong(1);
             }
             item.setNewUID(uid);
+        }
+        else {
+//            String query = "UPDATE EXCURSIONOBJECTS SET " +
+//                    "EXCURSIONOBJECTS.description = ?, " +
+//                    "EXCURSIONOBJECTS.pict = ?," +
+//                    "EXCURSIONOBJECTS.excID = ?" +
+//                    "WHERE EXCURSIONOBJECTS.uid = ?;";
+//            PreparedStatement st = connection.prepareStatement(query);
+//            st.setString(1, item.getDescription(0).getLabel());
+//            st.setBlob(2, (Blob) null);
+//            st.setInt(3, excID);
+//            st.setInt(4, item.getObjUID());
+//            st.execute();
+//            int uid = 0;
+//            ResultSet generatedKeys = st.getGeneratedKeys();
+//            if (generatedKeys.next()) {
+//                uid = (int) generatedKeys.getLong(1);
+//            }
+//            item.setNewUID(uid);
         }
 
     }

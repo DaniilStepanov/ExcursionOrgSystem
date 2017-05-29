@@ -5,6 +5,8 @@ import businesslogic.Receipt;
 import businesslogic.excursionobject.Excursion;
 import businesslogic.excursionobject.ExcursionBuilder;
 
+import java.util.ArrayList;
+
 /**
  * Created by Danya on 26.03.2017.
  */
@@ -39,16 +41,20 @@ public class Organizator extends User {
             return false;
     }
     public void setExcursion(Excursion e){
+        e.setOrg(this);
         excursion = e;
     }
 
     public void payToDriver(Driver d, int sum){
-        Receipt rec = PaySystem.pay(excursion, sum);
-        excursion.setPay(true, rec);
+        if(d.getLogin().equals(excursion.getDriver().getLogin()) &&
+                !excursion.isPaid()){
+            Receipt rec = PaySystem.pay(excursion, sum);
+            excursion.setPay(true, rec);
+        }
     }
 
-    public void createExcursion(){
-        excursion = ExcursionBuilder.createExcursion(this);
+    public void createExcursion(String name){
+        excursion = ExcursionBuilder.createExcursion(this, name);
     }
 
     private Excursion excursion;

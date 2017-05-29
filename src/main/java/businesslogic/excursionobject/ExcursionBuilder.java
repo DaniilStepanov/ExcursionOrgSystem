@@ -8,12 +8,20 @@ import java.util.ArrayList;
  * Created by Danya on 26.03.2017.
  */
 public class ExcursionBuilder {
-    static public Excursion createExcursion(Organizator org, int uid){
-        return new Excursion(org, uid);
+    static public Excursion createExcursion(Organizator org, int uid, String name){
+        if( org != null && org.getExcursion() != null
+                && org.getExcursion().getDriver() != null){
+            org.getExcursion().getDriver().setDriverFree();
+        }
+        return new Excursion(org, uid, name);
     }
 
-    static public Excursion createExcursion(Organizator org){
-        return new Excursion(org, 0);
+    static public Excursion createExcursion(Organizator org, String name){
+        if( org != null && org.getExcursion() != null
+                && org.getExcursion().getDriver() != null){
+            org.getExcursion().getDriver().setDriverFree();
+        }
+        return new Excursion(org, 0, name);
     }
 
     static public ExcursionObject createExcursionObject(int uid){

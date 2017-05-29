@@ -7,10 +7,6 @@ public class UserFactory {
 
     public static Driver createDriver(String name, int money, boolean isFree, int uid){
         Driver d = new Driver(uid, name, money);
-        if (isFree)
-            d.setDriverFree();
-        else
-            d.setDriverBusy();
         return d;
     }
 

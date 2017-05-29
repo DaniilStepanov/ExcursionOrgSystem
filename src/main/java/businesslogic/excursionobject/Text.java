@@ -10,12 +10,10 @@ public class Text implements Description {
         this.content = content;
     }
 
-    @Override
     public String getLabel() {
-        return ("Text" + label);
+        return (label);
     }
 
-    @Override
     public String getContent() {
         return content;
     }

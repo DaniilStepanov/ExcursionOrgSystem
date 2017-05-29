@@ -10,10 +10,13 @@ public class Driver extends User {
     Driver(int UID, String name, int money){
         super(UID, name, money);
         isFree = true;
+        exc = null;
     }
 
     Driver(int UID, String name){
         super(UID, name);
+        isFree = true;
+        exc = null;
     }
 
     public void addVehicle(String model, int mileage, int capacity, String numbers) {
@@ -39,10 +42,12 @@ public class Driver extends User {
         }
     }
     public Vehicle getVehicle(){return vehicle;}
-    public void setDriverFree(){isFree = true;}
-    public void setDriverBusy(){isFree = false;}
+    public Excursion getExcursion() { return exc; }
+    public void setDriverFree(){isFree = true; exc = null;}
+    public void setDriverBusy(Excursion e){isFree = false; exc = e;}
     public boolean isFree(){return isFree;}
 
     private Vehicle vehicle;
     private boolean isFree;
+    private Excursion exc;
 }

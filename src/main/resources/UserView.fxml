@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="552.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controllers.UserViewController">
+   <children>
+      <Text fx:id="welcome" layoutX="38.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome, ">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text fx:id="yourExc" layoutX="299.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your excursions:">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Text>
+      <Text layoutX="39.0" layoutY="123.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Excursion list:">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Text>
+      <ListView fx:id="excList" editable="true" layoutX="39.0" layoutY="142.0" prefHeight="264.0" prefWidth="202.0" />
+      <Separator layoutX="283.0" layoutY="101.0" orientation="VERTICAL" prefHeight="345.0" prefWidth="0.0" />
+      <Text layoutX="299.0" layoutY="101.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Excursion description:">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Text>
+      <Text fx:id="excDesc" layoutX="299.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Text>
+      <Button layoutX="27.0" layoutY="421.0" mnemonicParsing="false" onAction="#addToExcursion" text="Add to excursion" />
+      <Text fx:id="myExcs" layoutX="297.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Button layoutX="157.0" layoutY="421.0" mnemonicParsing="false" onAction="#delFromExcursion" text="Del from excursion" />
+   </children>
+</AnchorPane>

@@ -9,13 +9,15 @@ import storage.Gateway;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Danya on 21.05.2017.
  */
 public class DriverMapper implements UserMapperInterface<Driver> {
 
-    private static ArrayList<Driver> drivers = new ArrayList<Driver>();
+    private static Set<Driver> drivers = new HashSet<Driver>();
     private Connection connection;
     private UserMapper userMapper;
     private VehicleMapper vehicleMapper;
@@ -52,11 +54,11 @@ public class DriverMapper implements UserMapperInterface<Driver> {
     }
 
     public Driver findByID(int id) throws SQLException {
-        for(int i = 0; i < drivers.size(); ++i){
-            if(drivers.get(i).getUID() == id)
-                return drivers.get(i);
+        for (Driver d : drivers){
+            if(d.getUID() == id){
+                return d;
+            }
         }
-
         User us = userMapper.findByID(id);
         String query = "SELECT * FROM DRIVERS WHERE id = ?;";
         PreparedStatement st = connection.prepareStatement(query);
@@ -74,14 +76,35 @@ public class DriverMapper implements UserMapperInterface<Driver> {
     }
 
     public ArrayList<Driver> findAll() throws SQLException {
-        return null;
+        ArrayList<Driver> res = new ArrayList<Driver>();
+        String query = "SELECT * FROM drivers;";
+        PreparedStatement st = connection.prepareStatement(query);
+        ResultSet rs = st.executeQuery();
+        while (rs.next()){
+            int uid = rs.getInt("id");
+            Driver d = findByID(uid);
+            if( d != null)
+                res.add(d);
+        }
+        return res;
     }
 
     public void update(Driver item) throws SQLException {
         userMapper.update(item);
+        if(item.getExcursion() != null)
+            userMapper.updateExcursion(item.getExcursion().getUID(), item.getUID());
+        else
+            userMapper.updateExcursion(-1, item.getUID());
 
-        if(item.getVehicle() != null)
+        String query = "UPDATE drivers SET drivers.isFree = ? WHERE drivers.id = ?;";
+        PreparedStatement st = connection.prepareStatement(query);
+        st.setBoolean(1, item.isFree());
+        st.setInt(2, item.getUID());
+        st.executeUpdate();
+
+        if(item.getVehicle() != null){
             vehicleMapper.addVehicle(item, item.getVehicle());
+        }
     }
 
     public void update() throws SQLException {
@@ -101,9 +124,9 @@ public class DriverMapper implements UserMapperInterface<Driver> {
     public Driver getByExcursionID(int id) throws SQLException{
         ArrayList<User> users = userMapper.findByExcursionID(id);
         for (int i = 0; i < users.size(); ++i){
-            for(int j = 0; j < drivers.size(); ++j){
-                if(users.get(i).getUID() == drivers.get(j).getUID())
-                    return drivers.get(j);
+            for (Driver d : drivers){
+                if(users.get(i).getUID() == d.getUID())
+                    return d;
             }
         }
         for (int i = 0; i < users.size(); ++i){
@@ -114,11 +137,10 @@ public class DriverMapper implements UserMapperInterface<Driver> {
     }
 
     public Driver findByLogin(String login) throws SQLException {
-        for(int i = 0; i < drivers.size(); ++i){
-            if(drivers.get(i).getLogin() == login)
-                return drivers.get(i);
+        for (Driver d : drivers){
+            if(d.getLogin().equals(login))
+                return d;
         }
-
         User us = userMapper.findByLogin(login);
         String query = "SELECT * FROM DRIVERS WHERE id = ?;";
         PreparedStatement st = connection.prepareStatement(query);

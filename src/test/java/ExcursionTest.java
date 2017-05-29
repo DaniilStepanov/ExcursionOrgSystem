@@ -15,7 +15,7 @@ public class ExcursionTest {
     public void testCreation(){
         Organizator org = UserFactory.createOrganizator("Daniil", 100, 0);
         assertNull(org.getExcursion());
-        ExcursionBuilder.createExcursion(org, 0);
+        ExcursionBuilder.createExcursion(org, 0, "LOL");
         assertNotNull(org.getExcursion());
         Text t1 = new Text("Temple", "1831");
         Text t2 = new Text("Waterfall", "70 m");
@@ -33,7 +33,7 @@ public class ExcursionTest {
     @Test
     public void testAddingUsers(){
         Organizator org = UserFactory.createOrganizator("Daniil", 100, 0);
-        ExcursionBuilder.createExcursion(org, 0);
+        ExcursionBuilder.createExcursion(org, 0, "LOL");
         Excursion e = org.getExcursion();
         assertNotNull(e.getUsers());
         assertTrue(e.getUsers().size()==0);
@@ -49,7 +49,7 @@ public class ExcursionTest {
     public void testDriverWithoutVehicleSetting(){
         Driver d = UserFactory.createDriver("Driver", 0);
         Organizator org = UserFactory.createOrganizator("Daniil", 1);
-        ExcursionBuilder.createExcursion(org, 0);
+        ExcursionBuilder.createExcursion(org, 0, "LOL");
         org.setDriver(d);
     }
 
@@ -58,12 +58,12 @@ public class ExcursionTest {
         Driver d = UserFactory.createDriver("Driver", 100, 0);
         d.addVehicle("Vaz 2114", 100000, 5, "E777EE78");
         Organizator org = UserFactory.createOrganizator("Daniil", 100, 1);
-        ExcursionBuilder.createExcursion(org, 0);
+        ExcursionBuilder.createExcursion(org, 0, "LOL");
         assertFalse(org.setDriver(d));
         d.checkVehicle();
         assertTrue(org.setDriver(d));
         Organizator org2 = UserFactory.createOrganizator("Volodya", 2);
-        ExcursionBuilder.createExcursion(org2, 2);
+        ExcursionBuilder.createExcursion(org2, 2, "LOL");
         assertFalse(org2.setDriver(d));
         org.getExcursion().getDriver().setDriverFree();
         org.endExcursion();
@@ -73,7 +73,7 @@ public class ExcursionTest {
     @Test
     public void testDeletion(){
         Organizator org = UserFactory.createOrganizator("Danya", 0);
-        ExcursionBuilder.createExcursion(org, 0);
+        ExcursionBuilder.createExcursion(org, 0, "LOL");
         ExcursionObject eo = ExcursionBuilder.createExcursionObject();
         eo.addText("Flowers", "1000");
         ExcursionObject eo2 = ExcursionBuilder.createExcursionObject();

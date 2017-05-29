@@ -25,7 +25,7 @@ public class ReceiptMapper {
 
     public Receipt findByExc(Excursion e) throws SQLException {
         for (Receipt rec : recps){
-            if(rec.getExc() == e)
+            if(rec.getExc().equals(e))
                 return rec;
         }
         String query = "SELECT * FROM receipts WHERE excID = ?;";

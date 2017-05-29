@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="472.0" prefWidth="552.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controllers.AddVehicleViewController">
+   <children>
+      <TextField fx:id="model" layoutX="202.0" layoutY="51.0" />
+      <TextField fx:id="mileage" layoutX="202.0" layoutY="123.0" />
+      <TextField fx:id="capacity" layoutX="202.0" layoutY="199.0" />
+      <TextField fx:id="numbers" layoutX="202.0" layoutY="276.0" />
+      <Button layoutX="251.0" layoutY="366.0" mnemonicParsing="false" onAction="#addVehicleButtonClicked" prefHeight="25.0" prefWidth="51.0" text="OK" />
+      <Text layoutX="202.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Model" />
+      <Text layoutX="203.0" layoutY="111.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mileage" />
+      <Text layoutX="202.0" layoutY="188.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Capacity" />
+      <Text layoutX="202.0" layoutY="266.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Numbers" />
+      <Text fx:id="error" layoutX="262.0" layoutY="347.0" strokeType="OUTSIDE" strokeWidth="0.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>

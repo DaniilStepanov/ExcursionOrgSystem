@@ -5,6 +5,7 @@ import businesslogic.excursionobject.ExcursionObject;
 import businesslogic.userfactory.Driver;
 import businesslogic.userfactory.Organizator;
 import businesslogic.userfactory.User;
+import com.sun.org.apache.xpath.internal.operations.Or;
 
 import java.util.ArrayList;
 
@@ -13,21 +14,27 @@ import java.util.ArrayList;
  */
 public class Excursion {
 
-    Excursion(Organizator org, int UID){
+    Excursion(Organizator org, int UID, String name){
         this.org = org;
         this.UID = UID;
-        org.setExcursion(this);
         objects = new ArrayList<ExcursionObject>();
         users = new ArrayList<User>();
         isPay = false;
+        this.name = name;
+        if(org != null)
+            org.setExcursion(this);
     }
 
     public void setDriver(Driver d){
         if (d.getVehicle() == null)
             throw new RuntimeException("Driver without vehicle!");
         else{
-            driver = d;
-            d.setDriverBusy();
+            if(d.getVehicle().isChecked() && d.isFree() && !isPay){
+                if (driver != null)
+                    driver.setDriverFree();
+                driver = d;
+                d.setDriverBusy(this);
+            }
         }
     }
     public void addExcursionObject(ExcursionObject obj){
@@ -55,12 +62,51 @@ public class Excursion {
             System.out.println("Excursion still not paid");
         }
     }
+    public String printExcursionInStr(){
+        String res = "";
+        res += "Excursion number " + UID + "\n";
+        res += "Organizator is " + org.getLogin() + "\nDriver is ";
+        if(driver == null)
+            res += "No driver\n";
+        else
+            res += driver.getLogin() + "\n";
+        res += "Excursion objects:\n";
+        int ind = 1;
+        for (ExcursionObject eo: objects){
+            res += ind + ". " + eo.printDescriptionInString();
+            ++ind;
+        }
+        res += "\n\n";
+        res += "List of participants:\n";
+        for (int i = 0; i < users.size(); ++i){
+            res += i + ". " + users.get(i).getLogin() + "\n";
+        }
+        res += "\n\n";
+        if (isPay) {
+            res += "Excursion is paid \n";
+            res += rec.printReceiptInString();
+        }
+        else {
+            res+= "Excursion still not paid";
+        }
+        return res;
+    }
 
     public ArrayList<ExcursionObject> getExsursionObjects(){return objects;}
-    public void addUser(User u){users.add(u);}
+    public void addUser(User u){
+        if(!users.contains(u))
+            users.add(u);
+    }
+
+    public void delUser(User u){
+        if(users.contains(u))
+            users.remove(u);
+    }
 
     public void setPay(boolean b, Receipt receipt){isPay = b; rec = receipt;}
+    public void setPaid(boolean b){isPay = b;}
     public void setNewUID(int UID) { this.UID = UID;}
+    public void setOrg(Organizator o) {org = o;}
 
     public Driver getDriver(){return driver; }
     public Receipt getReceipt(){return rec;}
@@ -68,6 +114,7 @@ public class Excursion {
     public ArrayList<User> getUsers(){return users;}
     public int getUID() {return UID;}
     public boolean isPaid() {return isPay;}
+    public String getName() {return name;}
 
     //objects
     private ArrayList<ExcursionObject> objects;
@@ -77,4 +124,5 @@ public class Excursion {
     private Organizator org;
     private Driver driver;
     private Receipt rec;
+    private String name;
 }

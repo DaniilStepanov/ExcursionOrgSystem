@@ -33,7 +33,8 @@ create table VEHICLES (
 
 create table EXCURSIONS (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  isPaid BOOL NOT NULL
+  isPaid BOOL NOT NULL,
+  name VARCHAR(1000) NOT NULL
 );
 
 create table ORGANIZATORS (
@@ -74,6 +75,7 @@ VALUES (
   "Vaz 2114", 100000, 5, "E777EE78", TRUE
 );
 
+
 #Add organizator
 INSERT INTO USERS(USERS.login, USERS.money, USERS.excursionID)
   VALUES ("DANIIL", 100, NULL);
@@ -83,20 +85,37 @@ INSERT INTO ORGANIZATORS(ORGANIZATORS.id) VALUES (
 
 #Create excursion objects and excursion
 INSERT INTO EXCURSIONOBJECTS(EXCURSIONOBJECTS.description)
-VALUES ("TEMPLE");
+VALUES ("Псебай. Поселок, расположенный в живописной долине на берегах реки Малая Лаба, в окружении заповедного леса, гор, ручьев, озер и рек. Поселок находится на юго-восточной окраине Краснодарского края.");
 INSERT INTO EXCURSIONOBJECTS(EXCURSIONOBJECTS.description)
-VALUES ("Waterfall");
+VALUES ("Река Малая Лаба. Чистейшая горная река — левый приток Кубани — начинается на высоте 2401 метр с северных склонов перевала Аишко.");
+INSERT INTO EXCURSIONOBJECTS(EXCURSIONOBJECTS.description)
+VALUES ("Аишха (Аишхо). Вершина в цепи ГКХ, между верховьями рек Малой Лабы и Мзымты. В 4 км на северо-запад располагается перевал Аишха (2401). Возможно название вершины сложное слово, состоящее из аи (ае) и шха (шхо), с адыгейского переводится как «некрасивая вершина».");
+INSERT INTO EXCURSIONOBJECTS(EXCURSIONOBJECTS.description)
+VALUES ("Красная Поляна. Популярный российский горнолыжный курорт, снежная жемчужна Сочи. На Красной Поляне туристов привлекают снежные склоны для катания на сноуборде и горных лыжах, невесомый, пуховый снег, редкий горно-морской климат, ну и, конечно же, великолепная природа Большого Кавказа: захватывающие дух горные пейзажи, бурные реки, озера с кристально чистой водой, древние ледники, уникальные леса.");
 
-INSERT INTO EXCURSIONS(EXCURSIONS.isPaid) VALUES (FALSE);
+INSERT INTO EXCURSIONS(EXCURSIONS.isPaid, EXCURSIONS.name) VALUES (FALSE, "Через горы к морю");
 UPDATE USERS SET USERS.excursionID = 1 WHERE USERS.id = 2;
 UPDATE EXCURSIONOBJECTS SET EXCURSIONOBJECTS.excID = 1 WHERE EXCURSIONOBJECTS.uid = 1;
 UPDATE EXCURSIONOBJECTS SET EXCURSIONOBJECTS.excID = 1 WHERE EXCURSIONOBJECTS.uid = 2;
+UPDATE EXCURSIONOBJECTS SET EXCURSIONOBJECTS.excID = 1 WHERE EXCURSIONOBJECTS.uid = 3;
+UPDATE EXCURSIONOBJECTS SET EXCURSIONOBJECTS.excID = 1 WHERE EXCURSIONOBJECTS.uid = 4;
 
 #Add driver and users to excursion
 UPDATE USERS SET USERS.excursionID = 1 WHERE USERS.id = 1;
 UPDATE DRIVERS SET DRIVERS.isFree = FALSE WHERE DRIVERS.id = 1;
 INSERT INTO USERS(USERS.login, USERS.money, USERS.excursionID)
-VALUES ("User1", 120, 1);
+VALUES ("User1", 120, NULL);
 INSERT INTO USERS(USERS.login, USERS.money, USERS.excursionID)
-VALUES ("User2", 777, 1)
-
+VALUES ("User2", 777, 1);
+INSERT INTO USERS(USERS.login, USERS.money, USERS.excursionID)
+VALUES ("VinDiesel", 777, NULL);
+INSERT INTO DRIVERS(DRIVERS.id, DRIVERS.isFree) VALUES (
+  (SELECT (USERS.id) from USERS WHERE USERS.login = "VinDiesel"),
+  TRUE
+);
+INSERT INTO VEHICLES(VEHICLES.driversID, VEHICLES.model, VEHICLES.mileage,
+                     VEHICLES.capacity, VEHICLES.numbers, VEHICLES.isChecked)
+VALUES (
+  (SELECT (USERS.id) from USERS WHERE USERS.login = "VinDiesel"),
+  "Chevrolet Camaro", 1, 5, "O001OO78", TRUE
+);

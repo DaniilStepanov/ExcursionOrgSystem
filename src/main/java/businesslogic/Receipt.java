@@ -19,6 +19,14 @@ public class Receipt {
         System.out.format("UID: %d \nOrganizer: %s \nDriver: %s \n\nPaid %d \n", UID, e.getOrg().getLogin(), e.getDriver().getLogin(), sum);
     }
 
+    public String printReceiptInString(){
+        String res = "";
+        res += "Organizer: " +e.getOrg().getLogin() +
+                "\nDriver: "+ e.getDriver().getLogin() + "\n\nPaid "+
+                sum + "\n";
+        return res;
+    }
+
     public int getUID(){
         return UID;
     }

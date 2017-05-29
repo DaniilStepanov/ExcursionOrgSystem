@@ -23,5 +23,6 @@
       </RadioButton>
       <RadioButton fx:id="asDriver" layoutX="312.0" layoutY="376.0" mnemonicParsing="false" text="As driver" toggleGroup="$group" />
       <RadioButton fx:id="asOrg" layoutX="312.0" layoutY="410.0" mnemonicParsing="false" text="As organizator" toggleGroup="$group" />
+      <Text fx:id="error" fill="RED" layoutX="180.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" />
     </children>
 </AnchorPane>

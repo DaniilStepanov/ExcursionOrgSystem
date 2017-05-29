@@ -4,6 +4,10 @@ import businesslogic.excursionobject.Excursion;
 import businesslogic.excursionobject.ExcursionBuilder;
 import businesslogic.excursionobject.ExcursionObject;
 import businesslogic.userfactory.*;
+import gui.controllers.AddVehicleViewController;
+import gui.controllers.DriverViewController;
+import gui.controllers.OrganizatorViewController;
+import gui.controllers.UserViewController;
 import gui.facade.Facade;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -46,9 +50,11 @@ import java.util.ArrayList;
 public class ExSystem extends Application{
 
     public static Facade facade = new Facade();
+    public static Stage myStage;
 
     @Override
     public void start(Stage stage) throws Exception{
+        myStage = stage;
         //Init DB
         Gateway g = new Gateway();
         g.dropAll();
@@ -58,14 +64,53 @@ public class ExSystem extends Application{
         FXMLLoader loader = new FXMLLoader();
         AnchorPane root = (AnchorPane) loader.load(ExSystem.class.getClass().getResourceAsStream(fxmlFile));
         Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        myStage.setScene(scene);
+        myStage.show();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         launch(args);
     }
 
+    public static void showDriverView(String login) throws Exception{
+        String fxmlFile = "/DriverView.fxml";
+        FXMLLoader loader = new FXMLLoader();
+        AnchorPane root = (AnchorPane) loader.load(ExSystem.class.getClass().getResourceAsStream(fxmlFile));
+        DriverViewController dvc = loader.getController();
+        dvc.init(login);
+        Scene scene = new Scene(root);
+        myStage.setScene(scene);
+    }
+
+    public static void showAddVehicleView(String login) throws Exception{
+        String fxmlFile = "/addVehicleView.fxml";
+        FXMLLoader loader = new FXMLLoader();
+        AnchorPane root = (AnchorPane) loader.load(ExSystem.class.getClass().getResourceAsStream(fxmlFile));
+        AddVehicleViewController avvc = loader.getController();
+        avvc.init(login);
+        Scene scene = new Scene(root);
+        myStage.setScene(scene);
+    }
+
+    public static void showOrganizatorView(String login) throws Exception {
+        String fxmlFile = "/OrganizatorView.fxml";
+        FXMLLoader loader = new FXMLLoader();
+        AnchorPane root = (AnchorPane) loader.load(ExSystem.class.getClass().getResourceAsStream(fxmlFile));
+        OrganizatorViewController ovc = loader.getController();
+        ovc.init(login);
+        Scene scene = new Scene(root);
+        myStage.setScene(scene);
+    }
+
+    public static void showUserView(String login) throws Exception {
+        String fxmlFile = "/UserView.fxml";
+        FXMLLoader loader = new FXMLLoader();
+        AnchorPane root = (AnchorPane) loader.load(ExSystem.class.getClass().getResourceAsStream(fxmlFile));
+        UserViewController uvc = loader.getController();
+        uvc.init(login);
+        Scene scene = new Scene(root);
+        myStage.setScene(scene);
+    }
 
 //    public static void main(String [] args) throws IOException, SQLException {
 //

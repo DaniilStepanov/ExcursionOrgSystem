@@ -38,7 +38,7 @@ public class MainTest {
         d.addVehicle("Vaz 2114", 100000, 5, "E777EE78");
         d.checkVehicle();
         Organizator org = UserFactory.createOrganizator("Daniil", 100, 1);
-        ExcursionBuilder.createExcursion(org, 0);
+        ExcursionBuilder.createExcursion(org, 0, "LOL");
         ExcursionObject eo = ExcursionBuilder.createExcursionObject();
         eo.addText(" Temple", "");
         ExcursionObject eo2 = ExcursionBuilder.createExcursionObject();
@@ -68,7 +68,7 @@ public class MainTest {
         d.addVehicle("Vaz 2114", 100000, 5, "E777EE78");
         d.checkVehicle();
         Organizator org = UserFactory.createOrganizator("Daniil", 100, 1);
-        ExcursionBuilder.createExcursion(org, 0);
+        ExcursionBuilder.createExcursion(org, 0, "LOL");
         ExcursionObject eo = ExcursionBuilder.createExcursionObject();
         eo.addText(" Temple", "");
         ExcursionObject eo2 = ExcursionBuilder.createExcursionObject();

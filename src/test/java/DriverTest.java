@@ -1,3 +1,5 @@
+import businesslogic.excursionobject.Excursion;
+import businesslogic.excursionobject.ExcursionBuilder;
 import businesslogic.userfactory.Driver;
 import businesslogic.userfactory.UserFactory;
 import org.junit.*;
@@ -22,12 +24,13 @@ public class DriverTest {
     @Test
     public void testFree(){
         Driver d = UserFactory.createDriver("Ashot", 100);
+        Excursion e = ExcursionBuilder.createExcursion(null, "LOL");
         d.addVehicle("Vaz 2114", 100000, 5, "E777EE78");
         d.checkVehicle();
         assertTrue(d.getVehicle().isChecked() == true);
         d.setDriverFree();
         assertTrue(d.isFree() == true);
-        d.setDriverBusy();
+        d.setDriverBusy(e);
         assertTrue(d.isFree() == false);
     }
 }

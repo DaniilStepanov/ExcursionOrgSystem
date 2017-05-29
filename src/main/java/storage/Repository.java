@@ -16,6 +16,7 @@ import storage.Mappers.user.VehicleMapper;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Created by Danya on 21.05.2017.
@@ -88,6 +89,15 @@ public class Repository {
 
     public Driver getDriver(String login) throws SQLException{
         Driver driver = driverMapper.findByLogin(login);
+        if (driver == null)
+            return null;
+        if(driver.isFree())
+            return driver;
+        int excId = userMapper.getExcursionID(driver);
+        if(excId == -1 || excId == 0)
+            driver.setDriverFree();
+        else
+            driver.setDriverBusy(excursionMapper.findByID(excId));
         return driver;
     }
 
@@ -97,6 +107,10 @@ public class Repository {
         organizatorMapper.update();
     }
 
+    public void updateDrivers() throws SQLException {
+        driverMapper.update();
+    }
+
     public ExcursionObject addExcursionObject(String label, String text) throws SQLException{
         ExcursionObject eo = ExcursionBuilder.createExcursionObject();
         eo.addText(label, text);
@@ -104,4 +118,16 @@ public class Repository {
         return eo;
     }
 
+    public void delUserFromExc(String name) throws SQLException{
+        User u = getUser(name);
+        userMapper.updateExcursion(-1, u.getUID());
+    }
+
+    public ArrayList<Excursion> getAllExcursions() throws SQLException{
+        return organizatorMapper.getAllExcursions();
+    }
+
+    public ArrayList<Driver> getAllDrivers() throws SQLException {
+        return driverMapper.findAll();
+    }
 }

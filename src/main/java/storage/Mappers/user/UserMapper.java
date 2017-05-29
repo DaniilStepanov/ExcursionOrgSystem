@@ -43,7 +43,10 @@ public class UserMapper implements UserMapperInterface<User> {
                 "users.excursionID = ? " +
                 "WHERE users.id = ?;";
         PreparedStatement st = connection.prepareStatement(query);
-        st.setInt(1, excID);
+        if(excID == -1)
+            st.setNull(1, Types.INTEGER);
+        else
+            st.setInt(1, excID);
         st.setInt(2, uid);
         st.execute();
     }
@@ -87,7 +90,19 @@ public class UserMapper implements UserMapperInterface<User> {
     }
 
     public ArrayList<User> findAll() throws SQLException {
-        return null;
+        ArrayList<User> res = new ArrayList<User>();
+        String query = "SELECT * FROM USERS;";
+        PreparedStatement st = connection.prepareStatement(query);
+        ResultSet rs = st.executeQuery();
+        while (rs.next()){
+            int uid = rs.getInt("id");
+            String login = rs.getString("login");
+            int money = rs.getInt("money");
+            int excId = rs.getInt("excursionID");
+            User u = UserFactory.createUser(uid, login, money);
+            res.add(u);
+        }
+        return res;
     }
 
     public void update(User item) throws SQLException {
@@ -112,9 +127,20 @@ public class UserMapper implements UserMapperInterface<User> {
         users.clear();
     }
 
+    public int getExcursionID(User u) throws SQLException {
+        String query = "SELECT excursionID FROM USERS WHERE login = ?;";
+        PreparedStatement st = connection.prepareStatement(query);
+        st.setString(1, u.getLogin());
+        ResultSet rs = st.executeQuery();
+        if(!rs.next()) return -1;
+
+        int uid = rs.getInt("excursionID");
+        return uid;
+    }
+
     public User findByLogin(String login) throws SQLException {
         for(int i = 0; i < users.size(); ++i) {
-            if (users.get(i).getLogin() == login)
+            if (users.get(i).getLogin().equals(login))
                 return users.get(i);
         }
 
@@ -127,6 +153,8 @@ public class UserMapper implements UserMapperInterface<User> {
         int uid = rs.getInt("id");
         String newlogin = rs.getString("login");
         int money = rs.getInt("money");
-        return UserFactory.createUser(uid, newlogin, money);
+        User u = UserFactory.createUser(uid, newlogin, money);
+        users.add(u);
+        return u;
     }
 }

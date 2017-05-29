@@ -1,11 +1,13 @@
 package storage.Mappers.excursion;
 
+import businesslogic.Receipt;
 import businesslogic.excursionobject.Excursion;
 import businesslogic.excursionobject.ExcursionBuilder;
 import businesslogic.excursionobject.ExcursionObject;
 import businesslogic.userfactory.Driver;
 import businesslogic.userfactory.Organizator;
 import businesslogic.userfactory.User;
+import com.sun.org.apache.xpath.internal.SourceTree;
 import storage.Gateway;
 import storage.MapperInterface;
 import storage.Mappers.user.DriverMapper;
@@ -41,7 +43,36 @@ public class ExcursionMapper implements MapperInterface<Excursion> {
         for(int i = 0; i < excursions.size(); ++i)
             if(excursions.get(i).getUID() == id)
                 return excursions.get(i);
-        return null;
+        String query = "SELECT * FROM excursions WHERE id = ?;";
+        PreparedStatement st = connection.prepareStatement(query);
+        st.setInt(1, id);
+        ResultSet rs = st.executeQuery();
+        if(!rs.next()) return null;
+
+        boolean isPaid = rs.getBoolean("isPaid");
+        String name = rs.getString("name");
+        Excursion e = ExcursionBuilder.createExcursion(null, id, name);
+        ArrayList<ExcursionObject> objs = excursionObjectMapper.findByExcursionID(id);
+        for (ExcursionObject eo : objs){
+            e.addExcursionObject(eo);
+        }
+        //Set Driver
+        Driver d = driverMapper.getByExcursionID(id);
+        if (d != null)
+            e.setDriver(d);
+        //Get users
+        ArrayList<User> users = userMapper.findByExcursionID(id);
+        for (User u : users){
+            if(!d.getLogin().equals(u.getLogin())){
+                e.addUser(u);
+            }
+        }
+        //if is Paid getReceipt
+        if(isPaid){
+            Receipt r = receiptMapper.findByExc(e);
+            e.setPay(true, r);
+        }
+        return e;
     }
 
     public ArrayList<Excursion> findAll() throws SQLException {
@@ -51,11 +82,12 @@ public class ExcursionMapper implements MapperInterface<Excursion> {
     public void update(Excursion item) throws SQLException {
         if (findByID(item.getUID()) == null){
             String query = "INSERT INTO excursions(excursions.id," +
-                    "excursions.isPaid)" +
-                    "VALUES (?, ?);";
+                    "excursions.isPaid, excursions.name)" +
+                    "VALUES (?, ?, ?);";
             PreparedStatement st = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             st.setInt(1, item.getUID());
             st.setBoolean(2, item.isPaid());
+            st.setString(3, item.getName());
             st.execute();
             int uid = 1;
             ResultSet generatedKeys = st.getGeneratedKeys();
@@ -88,11 +120,13 @@ public class ExcursionMapper implements MapperInterface<Excursion> {
                 userMapper.updateExcursion(item.getUID(), item.getDriver().getUID());
             if(item.getReceipt() != null)
                 receiptMapper.update(item.getReceipt());
-            for (int i = 0; i < item.getUsers().size(); ++i)
+            for (int i = 0; i < item.getUsers().size(); ++i){
                 userMapper.updateExcursion(item.getUID(), item.getUsers().get(i).getUID());
-            for (int i = 0; i < item.getExsursionObjects().size(); ++i)
+            }
+            for (int i = 0; i < item.getExsursionObjects().size(); ++i){
                 excursionObjectMapper.updateWithExcursion(item.getExsursionObjects().get(i),
                         item.getUID());
+            }
         }
     }
 

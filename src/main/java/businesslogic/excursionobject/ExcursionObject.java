@@ -32,6 +32,14 @@ public class ExcursionObject {
         }
     }
 
+    public String printDescriptionInString(){
+        String res ="";
+        for (Description des: di){
+            res += des.getLabel().substring(0, des.getLabel().indexOf(".")) + "\n";
+        }
+        return res;
+    }
+
     public void setNewUID(int uid) {
         ObjUID = uid;
     }
