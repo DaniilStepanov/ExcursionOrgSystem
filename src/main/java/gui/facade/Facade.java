@@ -148,7 +148,6 @@ public class Facade {
                                     String numbers) throws Exception{
         Driver d = getDriver(login);
         d.addVehicle(model, mileage, capacity, numbers);
-        System.out.println("Add vehicle to driver " + d.getLogin());
         rep.updateDrivers();
     }
 

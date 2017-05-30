@@ -1,6 +1,7 @@
 package businesslogic.userfactory;
 
 import businesslogic.excursionobject.Excursion;
+import service.CheckVehicle;
 
 /**
  * Created by Danya on 26.03.2017.
@@ -28,11 +29,21 @@ public class Driver extends User {
         this.vehicle = v;
     }
 
-    public boolean checkVehicle(){
+    public boolean checkVehicle() throws Exception{
         // CHECK VEHICLE
         // External query
-        vehicle.setisChecked(true);
+        CheckVehicle service = new CheckVehicle();
+        if(vehicle != null){
+            boolean check = service.check(vehicle);
+            if(check)
+                vehicle.setisChecked(true);
+        }
+        return false;
+    }
 
+    public boolean checkTestVehicle() throws Exception{
+        // CHECK VEHICLE
+        vehicle.setisChecked(true);
         if(vehicle.isChecked()){
             return true;
         }
@@ -41,6 +52,7 @@ public class Driver extends User {
             return false;
         }
     }
+
     public Vehicle getVehicle(){return vehicle;}
     public Excursion getExcursion() { return exc; }
     public void setDriverFree(){isFree = true; exc = null;}

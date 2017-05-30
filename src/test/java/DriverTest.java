@@ -22,11 +22,11 @@ public class DriverTest {
     }
 
     @Test
-    public void testFree(){
+    public void testFree() throws  Exception{
         Driver d = UserFactory.createDriver("Ashot", 100);
         Excursion e = ExcursionBuilder.createExcursion(null, "LOL");
         d.addVehicle("Vaz 2114", 100000, 5, "E777EE78");
-        d.checkVehicle();
+        d.checkTestVehicle();
         assertTrue(d.getVehicle().isChecked() == true);
         d.setDriverFree();
         assertTrue(d.isFree() == true);

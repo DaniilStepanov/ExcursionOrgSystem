@@ -54,13 +54,13 @@ public class ExcursionTest {
     }
 
     @Test
-    public void testDriverSetting(){
+    public void testDriverSetting() throws Exception{
         Driver d = UserFactory.createDriver("Driver", 100, 0);
         d.addVehicle("Vaz 2114", 100000, 5, "E777EE78");
         Organizator org = UserFactory.createOrganizator("Daniil", 100, 1);
         ExcursionBuilder.createExcursion(org, 0, "LOL");
         assertFalse(org.setDriver(d));
-        d.checkVehicle();
+        d.checkTestVehicle();
         assertTrue(org.setDriver(d));
         Organizator org2 = UserFactory.createOrganizator("Volodya", 2);
         ExcursionBuilder.createExcursion(org2, 2, "LOL");

@@ -130,4 +130,8 @@ public class Repository {
     public ArrayList<Driver> getAllDrivers() throws SQLException {
         return driverMapper.findAll();
     }
+
+    public ArrayList<ExcursionObject> getAllObjects() throws SQLException {
+        return excursionObjectMapper.findAll();
+    }
 }

@@ -72,7 +72,7 @@ INSERT INTO VEHICLES(VEHICLES.driversID, VEHICLES.model, VEHICLES.mileage,
                      VEHICLES.capacity, VEHICLES.numbers, VEHICLES.isChecked)
 VALUES (
   (SELECT (USERS.id) from USERS WHERE USERS.login = "ASHOT"),
-  "Vaz 2114", 100000, 5, "E777EE78", TRUE
+  "Vaz 2114", 100000, 5, "Е777ЕЕ78", TRUE
 );
 
 
@@ -117,5 +117,5 @@ INSERT INTO VEHICLES(VEHICLES.driversID, VEHICLES.model, VEHICLES.mileage,
                      VEHICLES.capacity, VEHICLES.numbers, VEHICLES.isChecked)
 VALUES (
   (SELECT (USERS.id) from USERS WHERE USERS.login = "VinDiesel"),
-  "Chevrolet Camaro", 1, 5, "O001OO78", TRUE
+  "Chevrolet Camaro", 1, 5, "О001ОО78", TRUE
 );

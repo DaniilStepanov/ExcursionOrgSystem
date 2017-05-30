@@ -33,10 +33,10 @@ public class MainTest {
     }
 
     @Test
-    public void receiptTest(){
+    public void receiptTest() throws Exception{
         Driver d = UserFactory.createDriver("Ashot", 100, 0);
         d.addVehicle("Vaz 2114", 100000, 5, "E777EE78");
-        d.checkVehicle();
+        d.checkTestVehicle();
         Organizator org = UserFactory.createOrganizator("Daniil", 100, 1);
         ExcursionBuilder.createExcursion(org, 0, "LOL");
         ExcursionObject eo = ExcursionBuilder.createExcursionObject();
@@ -63,10 +63,10 @@ public class MainTest {
 
 
     @Test
-    public void workingScenary(){
+    public void workingScenary() throws Exception{
         Driver d = UserFactory.createDriver("Ashot", 100, 0);
         d.addVehicle("Vaz 2114", 100000, 5, "E777EE78");
-        d.checkVehicle();
+        d.checkTestVehicle();
         Organizator org = UserFactory.createOrganizator("Daniil", 100, 1);
         ExcursionBuilder.createExcursion(org, 0, "LOL");
         ExcursionObject eo = ExcursionBuilder.createExcursionObject();

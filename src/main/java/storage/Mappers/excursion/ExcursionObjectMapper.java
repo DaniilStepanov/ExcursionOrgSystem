@@ -119,7 +119,22 @@ public class ExcursionObjectMapper implements MapperInterface<ExcursionObject> {
     }
 
     public ArrayList<ExcursionObject> findAll() throws SQLException {
-        return null;
+        ArrayList<ExcursionObject> objs = new ArrayList<ExcursionObject>();
+        String query = "SELECT * FROM EXCURSIONOBJECTS;";
+        PreparedStatement st = connection.prepareStatement(query);
+        ResultSet rs = st.executeQuery();
+
+        while (rs.next()){
+            int uid = rs.getInt("uid");
+            int excId = rs.getInt("excID");
+            String description = rs.getString("description");
+            Blob blob = rs.getBlob("pict");
+            ExcursionObject eo = ExcursionBuilder.createExcursionObject(uid);
+            if(description != null)
+                eo.addText(description, "");
+            objs.add(eo);
+        }
+        return objs;
     }
 
     public void updateExcursion(int excID, int uid) throws SQLException{
