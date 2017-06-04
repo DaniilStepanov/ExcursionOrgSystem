@@ -1,5 +1,6 @@
 package businesslogic.excursionobject;
 
+import businesslogic.ErrorCodes;
 import businesslogic.Receipt;
 import businesslogic.excursionobject.ExcursionObject;
 import businesslogic.userfactory.Driver;
@@ -7,7 +8,10 @@ import businesslogic.userfactory.Organizator;
 import businesslogic.userfactory.User;
 import com.sun.org.apache.xpath.internal.operations.Or;
 
-import java.util.ArrayList;
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.Date;
 
 /**
  * Created by Danya on 26.03.2017.
@@ -23,45 +27,65 @@ public class Excursion {
         this.name = name;
         if(org != null)
             org.setExcursion(this);
+        comments = new HashMap<String, String>();
+        this.minTourists = 0;
+        this.maxTourists = 0;
+        this.equipment = "";
+        this.status = 0;
+        this.departureDate = new java.sql.Date(0);
+        canAddComments = false;
     }
 
-    public void setDriver(Driver d){
-        if (d.getVehicle() == null)
-            throw new RuntimeException("Driver without vehicle!");
-        else{
-            if(d.getVehicle().isChecked() && d.isFree() && !isPay){
-                if (driver != null)
-                    driver.setDriverFree();
-                driver = d;
-                d.setDriverBusy(this);
-            }
-        }
+    public int setExcursionInfo(int minTourists, int maxTourists,
+                                String equipment, java.sql.Date departureDate, int status){
+        this.minTourists = minTourists;
+        this.maxTourists = maxTourists;
+        this.equipment = equipment;
+        this.departureDate = departureDate;
+        if (minTourists > maxTourists)
+            return 1;
+        Date d = new Date();
+        if (departureDate.before(d))
+            return 2;
+        this.status = status;
+        return 0;
     }
+
+    public int beginExcursion(){
+        if (users.size() > maxTourists)
+            return ErrorCodes.maxTourists;
+        if (users.size() < minTourists)
+            return ErrorCodes.minTourists;
+        if (driver.isAgree() == false)
+            return ErrorCodes.driverIsNotAgree;
+        org.payToDriver(driver, driver.getGivenPrice());
+        status = 2;
+        return ErrorCodes.success;
+    }
+
+    public int endExcursion(){
+        status = 3;
+        driver.setDriverFree();
+        canAddComments = true;
+        return ErrorCodes.success;
+    }
+
+    public int addComment(String userName, String comment){
+        if (canAddComments)
+            comments.put(userName, comment);
+        else return ErrorCodes.cantAddComm;
+        return ErrorCodes.success;
+    }
+
+    public int setDriver(Driver d){
+        driver = d;
+        return ErrorCodes.success;
+    }
+
     public void addExcursionObject(ExcursionObject obj){
         objects.add(obj);
     }
-    public void printExcursion(){
-        System.out.format("Excursion number %d\n", UID);
-        System.out.format("Organizator is %s \nDriver is %s\n", org.getLogin(), driver.getLogin());
-        System.out.format("Description:\n");
-        for (ExcursionObject eo: objects){
-            System.out.println("Excursion objects:");
-            eo.printDescription();
-            System.out.format("\n\n");
-        }
-        System.out.println("List of participants:");
-        for (int i = 0; i < users.size(); ++i){
-            System.out.format("%d. %s\n", i, users.get(i).getLogin());
-        }
-        System.out.format("\n\n");
-        if (isPay) {
-            System.out.println("Excursion is paid");
-            rec.printReceipt();
-        }
-        else {
-            System.out.println("Excursion still not paid");
-        }
-    }
+
     public String printExcursionInStr(){
         String res = "";
         res += "Excursion number " + UID + "\n";
@@ -69,7 +93,10 @@ public class Excursion {
         if(driver == null)
             res += "No driver\n";
         else
-            res += driver.getLogin() + "\n";
+            if(driver.isAgree())
+                res += driver.getLogin() + " (agree)\n";
+            else
+                res += driver.getLogin() +" (not agree)\n";
         res += "Excursion objects:\n";
         int ind = 1;
         for (ExcursionObject eo: objects){
@@ -93,9 +120,20 @@ public class Excursion {
     }
 
     public ArrayList<ExcursionObject> getExsursionObjects(){return objects;}
-    public void addUser(User u){
-        if(!users.contains(u))
-            users.add(u);
+
+    public int addUser(User u){
+        if(status > 1)
+            return ErrorCodes.late;
+        for (User us : users){
+            if( u.getLogin().equals(us.getLogin()))
+                return ErrorCodes.userAlreadyInExcursion;
+        }
+        System.out.println();
+        System.out.println();
+        if (users.size() == maxTourists)
+            return ErrorCodes.maxTourists;
+        users.add(u);
+        return ErrorCodes.success;
     }
 
     public void delUser(User u){
@@ -103,11 +141,34 @@ public class Excursion {
             users.remove(u);
     }
 
+
+    public int getMinTourists() { return minTourists; }
+
+    public int getMaxTourists() { return maxTourists; }
+
+    public String getEquipment() { return equipment; }
+
+    public java.sql.Date getDepartureDate() { return departureDate; }
+
+    public int getStatus() { return status; }
+    public String getStringStatus() {
+        switch (status){
+            case 0:
+                return "Setting";
+            case 1:
+                return "Ready";
+            case 2:
+                return "In progress";
+            case 3:
+                return "End";
+            default:
+                return "";
+        }
+    }
+
     public void setPay(boolean b, Receipt receipt){isPay = b; rec = receipt;}
-    public void setPaid(boolean b){isPay = b;}
     public void setNewUID(int UID) { this.UID = UID;}
     public void setOrg(Organizator o) {org = o;}
-
     public Driver getDriver(){return driver; }
     public Receipt getReceipt(){return rec;}
     public Organizator getOrg(){return org;}
@@ -125,4 +186,14 @@ public class Excursion {
     private Driver driver;
     private Receipt rec;
     private String name;
+
+    //Update
+    private int minTourists;
+    private int maxTourists;
+    private String equipment;
+    private int status;
+    private java.sql.Date departureDate;
+    private boolean canAddComments;
+    private Map<String, String> comments;
+
 }

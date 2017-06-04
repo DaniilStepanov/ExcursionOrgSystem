@@ -27,6 +27,8 @@ public class OrganizatorViewController {
     @FXML private Button createExcursion;
     @FXML private Button ok;
     @FXML private Button ok2;
+    @FXML private Button startExcursion;
+    @FXML private Button endExcursion;
 
     @FXML private Text welcome;
     @FXML private Text balance;
@@ -66,20 +68,27 @@ public class OrganizatorViewController {
     public void setDriverClicked(ActionEvent actionEvent) throws Exception {
         String selected = driversList.getSelectionModel().getSelectedItem();
         String dr = selected.substring(0, selected.indexOf("("));
-        f.setDriverToExc(log, dr);
+        //f.setDriverToExc(log, dr);
+        String amount = payAmount.getText();
+        if (amount == "")
+            return;
+        int price = Integer.parseInt(amount);
+        int status = f.sendOfferToDriver(log, dr, price);
+        if (status != 0)
+            ExSystem.showErrorView(status);
         init(log);
     }
 
-    public void payDriverClicked(ActionEvent actionEvent) throws Exception {
-        String selected = driversList.getSelectionModel().getSelectedItem();
-        if (selected == null)
-            return;
-        String dr = selected.substring(0, selected.indexOf("("));
-        String amount = payAmount.getText();
-        int am = Integer.parseInt(amount);
-        f.payToDriver(log, dr, am);
-        init(log);
-    }
+//    public void payDriverClicked(ActionEvent actionEvent) throws Exception {
+//        String selected = driversList.getSelectionModel().getSelectedItem();
+//        if (selected == null)
+//            return;
+//        String dr = selected.substring(0, selected.indexOf("("));
+//        String amount = payAmount.getText();
+//        int am = Integer.parseInt(amount);
+//        f.payToDriver(log, dr, am);
+//        init(log);
+//    }
 
     public void addObjectClicked(ActionEvent actionEvent) {
         addObj.setText("");
@@ -103,6 +112,25 @@ public class OrganizatorViewController {
         f.addExcursion(log, addObj.getText());
         init(log);
 
+    }
+
+    public void onStartExcursionClicked(ActionEvent actionEvent) throws Exception {
+        int status = f.beginExcursion(log);
+        if (status != 0)
+            ExSystem.showErrorView(status);
+        startExcursion.setVisible(false);
+        endExcursion.setVisible(true);
+        init(log);
+    }
+
+    public void onEndExcursionClicked(ActionEvent actionEvent) throws Exception{
+        startExcursion.setVisible(true);
+        endExcursion.setVisible(false);
+    }
+
+    public void onUpdateButtonClicked(ActionEvent actionEvent) throws Exception{
+        f.updateOrg(log);
+        init(log);
     }
 
     String log;

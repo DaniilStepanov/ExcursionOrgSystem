@@ -65,12 +65,21 @@ public class OrganizatorMapper implements UserMapperInterface<Organizator> {
 
     public Organizator getByExcursionId(int id) throws SQLException{
         ArrayList<User> users = userMapper.findByExcursionID(id);
+//        for (int i = 0; i < users.size(); ++i){
+//            for(int j = 0; j < orgs.size(); ++j){
+//                if(users.get(i).getUID() == orgs.get(j).getUID())
+//                    return orgs.get(j);
+//            }
+//        }
         for (int i = 0; i < users.size(); ++i){
-            for(int j = 0; j < orgs.size(); ++j){
-                if(users.get(i).getUID() == orgs.get(j).getUID())
-                    return orgs.get(j);
-            }
+            if(findByID(users.get(i).getUID()) != null)
+                return findByID(users.get(i).getUID());
         }
+        return null;
+    }
+
+    public Organizator getByExcursionName(String name) throws SQLException{
+        ArrayList<User> users = userMapper.findByExcursionName(name);
         for (int i = 0; i < users.size(); ++i){
             if(findByID(users.get(i).getUID()) != null)
                 return findByID(users.get(i).getUID());
@@ -79,10 +88,10 @@ public class OrganizatorMapper implements UserMapperInterface<Organizator> {
     }
 
     public Organizator findByID(int id) throws SQLException {
-        for(int i = 0; i < orgs.size(); ++i){
-            if(orgs.get(i).getUID() == id)
-                return orgs.get(i);
-        }
+//        for(int i = 0; i < orgs.size(); ++i){
+//            if(orgs.get(i).getUID() == id)
+//                return orgs.get(i);
+//        }
 
         User u = userMapper.findByID(id);
 

@@ -37,12 +37,15 @@
       <Text fx:id="excName" layoutX="422.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
       <ListView fx:id="driversList" layoutX="39.0" layoutY="146.0" prefHeight="200.0" prefWidth="200.0" />
       <Text layoutX="39.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" text="List of drivers:" />
-      <Button fx:id="setDriver" layoutX="39.0" layoutY="365.0" mnemonicParsing="false" onAction="#setDriverClicked" text="Set driver" />
-      <Button fx:id="payDriver" layoutX="140.0" layoutY="365.0" mnemonicParsing="false" onAction="#payDriverClicked" text="Pay to driver:" />
+      <Button fx:id="setDriver" layoutX="39.0" layoutY="365.0" mnemonicParsing="false" onAction="#setDriverClicked" text="Send offer" />
+      <Button fx:id="startExcursion" layoutX="122.0" layoutY="365.0" mnemonicParsing="false" onAction="#onStartExcursionClicked" text="Start" />
       <Button fx:id="addObject" layoutX="64.0" layoutY="400.0" mnemonicParsing="false" onAction="#addObjectClicked" prefHeight="25.0" prefWidth="151.0" text="Add excursion object" />
-      <TextField fx:id="payAmount" layoutX="239.0" layoutY="365.0" prefHeight="25.0" prefWidth="32.0" />
+      <TextField fx:id="payAmount" layoutX="223.0" layoutY="365.0" prefHeight="25.0" prefWidth="55.0" />
       <TextArea fx:id="addObj" layoutX="289.0" layoutY="117.0" prefHeight="293.0" prefWidth="250.0" visible="false" />
       <Button fx:id="ok" layoutX="408.0" layoutY="422.0" mnemonicParsing="false" onAction="#okButtonClicked" text="OK" visible="false" />
       <Button fx:id="ok2" layoutX="407.0" layoutY="422.0" mnemonicParsing="false" onAction="#onOk2ButtonClicked" text="OK" />
+      <Button fx:id="updateButton" layoutX="314.0" layoutY="422.0" mnemonicParsing="false" onAction="#onUpdateButtonClicked" text="Update" />
+      <Text layoutX="175.0" layoutY="382.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Money:" />
+      <Button fx:id="endExcursion" layoutX="125.0" layoutY="365.0" mnemonicParsing="false" onAction="#onEndExcursionClicked" text="End" visible="false" />
    </children>
 </AnchorPane>

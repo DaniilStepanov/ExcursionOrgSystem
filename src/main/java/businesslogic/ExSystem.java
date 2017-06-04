@@ -1,57 +1,13 @@
 package businesslogic;
 
-import businesslogic.excursionobject.Excursion;
-import businesslogic.excursionobject.ExcursionBuilder;
-import businesslogic.excursionobject.ExcursionObject;
-import businesslogic.userfactory.*;
-import gui.controllers.AddVehicleViewController;
-import gui.controllers.DriverViewController;
-import gui.controllers.OrganizatorViewController;
-import gui.controllers.UserViewController;
+import gui.controllers.*;
 import gui.facade.Facade;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import service.Server;
 import storage.Gateway;
-import storage.Mappers.excursion.ExcursionMapper;
-import storage.Mappers.excursion.ExcursionObjectMapper;
-import storage.Mappers.user.DriverMapper;
-import storage.Mappers.user.OrganizatorMapper;
-import storage.Mappers.user.UserMapper;
-import storage.Mappers.user.VehicleMapper;
-import storage.Repository;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.apache.http.protocol.HTTP.USER_AGENT;
 
 
 /**
@@ -79,8 +35,8 @@ public class ExSystem extends Application{
     }
 
     public static void main(String[] args) throws Exception {
-        //Server s = new Server();
-        //s.start();
+//        Server s = new Server();
+//        s.start();
         launch(args);
     }
 
@@ -122,6 +78,28 @@ public class ExSystem extends Application{
         uvc.init(login);
         Scene scene = new Scene(root);
         myStage.setScene(scene);
+    }
+
+    public static void showOfferView(String login) throws Exception {
+        String fxmlFile = "/OfferView.fxml";
+        FXMLLoader loader = new FXMLLoader();
+        AnchorPane root = (AnchorPane) loader.load(ExSystem.class.getClass().getResourceAsStream(fxmlFile));
+        OfferViewController ynvc = loader.getController();
+        ynvc.init(login);
+        Scene scene = new Scene(root);
+        myStage.setScene(scene);
+    }
+
+    public static void showErrorView(int code) throws Exception {
+        Stage stage = new Stage();
+        String fxmlFile = "/ErrorView.fxml";
+        FXMLLoader loader = new FXMLLoader();
+        AnchorPane root = (AnchorPane) loader.load(ExSystem.class.getClass().getResourceAsStream(fxmlFile));
+        ErrorViewController evc = loader.getController();
+        evc.init(code, stage);
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
 //    public static void main(String [] args) throws IOException, SQLException {

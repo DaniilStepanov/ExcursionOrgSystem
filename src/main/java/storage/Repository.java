@@ -91,14 +91,21 @@ public class Repository {
         Driver driver = driverMapper.findByLogin(login);
         if (driver == null)
             return null;
-        if(driver.isFree())
-            return driver;
         int excId = userMapper.getExcursionID(driver);
-        if(excId == -1 || excId == 0)
+        if(excId == -1 || excId == 0){
             driver.setDriverFree();
-        else
+            return driver;
+        }
+        if (driver.isAgree())
             driver.setDriverBusy(excursionMapper.findByID(excId));
+        else
+            driver.setExc(excursionMapper.findByID(excId));
         return driver;
+    }
+
+    public Excursion getExcursion(String name) throws SQLException {
+        Organizator o = organizatorMapper.getByExcursionName(name);
+        return o.getExcursion();
     }
 
     public void update() throws SQLException {

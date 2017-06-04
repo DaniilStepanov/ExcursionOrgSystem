@@ -44,8 +44,11 @@ public class UserViewController {
                         excDesc.setWrappingWidth(250);
                         // excDesc.setText("Name: " + excDescriptions.get(0) + "\n");
                         for (int i = 1; i < excDescriptions.size(); i++){
-                            excDesc.setText(excDesc.getText() + i + ". " +
-                                    excDescriptions.get(i) + "\n\n");
+                            if(i > 5)
+                                excDesc.setText(excDesc.getText() + (i - 5) + ". " +
+                                        excDescriptions.get(i) + "\n\n");
+                            else
+                                excDesc.setText(excDesc.getText() + excDescriptions.get(i) + "\n");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -66,7 +69,9 @@ public class UserViewController {
         String selected = excList.getSelectionModel().getSelectedItem();
         if (selected == null)
             return;
-        f.addUserToExcursion(log, selected);
+        int st = f.addUserToExcursion(log, selected);
+        if(st != 0)
+            ExSystem.showErrorView(st);
         init(log);
     }
 

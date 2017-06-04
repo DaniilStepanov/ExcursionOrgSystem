@@ -1,5 +1,6 @@
 package storage.Mappers.user;
 
+import businesslogic.excursionobject.Excursion;
 import businesslogic.userfactory.User;
 import businesslogic.userfactory.UserFactory;
 import storage.Gateway;
@@ -36,6 +37,16 @@ public class UserMapper implements UserMapperInterface<User> {
             users.add(u);
         }
         return users;
+    }
+
+    public ArrayList<User> findByExcursionName(String name) throws SQLException{
+        String query = "SELECT * FROM excursions WHERE name = ?";
+        PreparedStatement select = connection.prepareStatement(query);
+        select.setString(1, name);
+        ResultSet rs = select.executeQuery();
+        if (!rs.next()) return null;
+        int id = rs.getInt("id");
+        return findByExcursionID(id);
     }
 
     public void updateExcursion(int excID, int uid) throws SQLException{
@@ -137,6 +148,7 @@ public class UserMapper implements UserMapperInterface<User> {
         int uid = rs.getInt("excursionID");
         return uid;
     }
+
 
     public User findByLogin(String login) throws SQLException {
         for(int i = 0; i < users.size(); ++i) {

@@ -1,5 +1,6 @@
 package storage.Mappers.user;
 
+import businesslogic.excursionobject.Excursion;
 import businesslogic.userfactory.Driver;
 import businesslogic.userfactory.User;
 import businesslogic.userfactory.UserFactory;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -17,7 +19,7 @@ import java.util.Set;
  */
 public class DriverMapper implements UserMapperInterface<Driver> {
 
-    private static Set<Driver> drivers = new HashSet<Driver>();
+    private static ArrayList<Driver> drivers = new ArrayList<Driver>();
     private Connection connection;
     private UserMapper userMapper;
     private VehicleMapper vehicleMapper;
@@ -42,10 +44,13 @@ public class DriverMapper implements UserMapperInterface<Driver> {
             uid = (int) generatedKeys.getLong(1);
         }
 
-        insertSQL = "INSERT INTO DRIVERS(DRIVERS.id, DRIVERS.isFree) VALUES (?, ?);";
+        insertSQL = "INSERT INTO DRIVERS(DRIVERS.id, DRIVERS.isFree," +
+                "DRIVERS.givenPrice, DRIVERS.isAgree) VALUES (?, ?, ?, ?);";
         insertStatement = connection.prepareStatement(insertSQL);
         insertStatement.setInt(1, uid);
         insertStatement.setBoolean(2,false);
+        insertStatement.setInt(3, -1);
+        insertStatement.setBoolean(4,false);
         insertStatement.executeUpdate();
 
         d.setNewUID(uid);
@@ -54,11 +59,11 @@ public class DriverMapper implements UserMapperInterface<Driver> {
     }
 
     public Driver findByID(int id) throws SQLException {
-        for (Driver d : drivers){
-            if(d.getUID() == id){
-                return d;
-            }
-        }
+//        for (Driver d : drivers){
+//            if(d.getUID() == id){
+//                return d;
+//            }
+//        }
         User us = userMapper.findByID(id);
         String query = "SELECT * FROM DRIVERS WHERE id = ?;";
         PreparedStatement st = connection.prepareStatement(query);
@@ -67,7 +72,14 @@ public class DriverMapper implements UserMapperInterface<Driver> {
 
         if (!rs.next()) return null;
         boolean isFree = rs.getBoolean("isFree");
+        int givenPrice = rs.getInt("givenPrice");
+        boolean isAgree = rs.getBoolean("isAgree");
         Driver d = UserFactory.createDriver(us.getLogin(), us.getMoney(), isFree, us.getUID());
+        d.setGivenPrice(givenPrice);
+        if (isAgree)
+            d.agree();
+        else
+            d.disagree();
         Vehicle v = vehicleMapper.getDriversVehicle(d);
         if (v != null)
             d.addVehicle(v);
@@ -90,18 +102,26 @@ public class DriverMapper implements UserMapperInterface<Driver> {
     }
 
     public void update(Driver item) throws SQLException {
+        for (int i = 0; i < drivers.size(); ++i){
+            if( drivers.get(i).getLogin() == item.getLogin()){
+                drivers.set(i, item);
+                break;
+            }
+        }
         userMapper.update(item);
         if(item.getExcursion() != null)
             userMapper.updateExcursion(item.getExcursion().getUID(), item.getUID());
         else
             userMapper.updateExcursion(-1, item.getUID());
 
-        String query = "UPDATE drivers SET drivers.isFree = ? WHERE drivers.id = ?;";
+        String query = "UPDATE drivers SET drivers.isFree = ?, drivers.givenPrice = ?," +
+                "drivers.isAgree = ? WHERE drivers.id = ?;";
         PreparedStatement st = connection.prepareStatement(query);
         st.setBoolean(1, item.isFree());
-        st.setInt(2, item.getUID());
+        st.setInt(2, item.getGivenPrice());
+        st.setBoolean(3, item.isAgree());
+        st.setInt(4, item.getUID());
         st.executeUpdate();
-
         if(item.getVehicle() != null){
             vehicleMapper.addVehicle(item, item.getVehicle());
         }
@@ -137,10 +157,10 @@ public class DriverMapper implements UserMapperInterface<Driver> {
     }
 
     public Driver findByLogin(String login) throws SQLException {
-        for (Driver d : drivers){
-            if(d.getLogin().equals(login))
-                return d;
-        }
+//        for (Driver d : drivers){
+//            if(d.getLogin().equals(login))
+//                return d;
+//        }
         User us = userMapper.findByLogin(login);
         String query = "SELECT * FROM DRIVERS WHERE id = ?;";
         PreparedStatement st = connection.prepareStatement(query);
@@ -149,7 +169,11 @@ public class DriverMapper implements UserMapperInterface<Driver> {
 
         if (!rs.next()) return null;
         boolean isFree = rs.getBoolean("isFree");
+        int givenPrice = rs.getInt("givenPrice");
+        boolean isAgree = rs.getBoolean("isAgree");
         Driver d = UserFactory.createDriver(us.getLogin(), us.getMoney(), isFree, us.getUID());
+        d.setGivenPrice(givenPrice);
+        d.setAgree(isAgree);
         Vehicle v = vehicleMapper.getDriversVehicle(d);
         if (v != null)
             d.addVehicle(v);

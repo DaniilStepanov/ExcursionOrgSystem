@@ -1,5 +1,7 @@
 package gui.facade;
 
+import businesslogic.ErrorCodes;
+import businesslogic.ExSystem;
 import businesslogic.excursionobject.Excursion;
 import businesslogic.excursionobject.ExcursionBuilder;
 import businesslogic.excursionobject.ExcursionObject;
@@ -55,12 +57,13 @@ public class Facade {
     }
 
     private Excursion getExc(String name) throws Exception {
-        for (Excursion e : excs){
-            if(e.getName().equals(name)){
-                return e;
-            }
-        }
-        return null;
+        return rep.getExcursion(name);
+//        for (Excursion e : excs){
+//            if(e.getName().equals(name)){
+//                return e;
+//            }
+//        }
+//        return null;
     }
 
     public String getDriversVehicleInfo(String login) throws Exception {
@@ -110,6 +113,11 @@ public class Facade {
         for (Excursion e : excs){
             if(e.getName().equals(excName)){
                 result.add(e.getName());
+                result.add("Min and Max tourists: " + e.getMinTourists() + " and " + e.getMaxTourists());
+                result.add("Free " + (e.getMaxTourists() - e.getUsers().size()) + " places\n");
+                result.add("Equipment: " + e.getEquipment());
+                result.add("Date: " + e.getDepartureDate());
+                result.add("Status: " + e.getStringStatus() + "\n\n");
                 ArrayList<ExcursionObject> eos = e.getExsursionObjects();
                 for( ExcursionObject eo : eos){
                     result.add(eo.getDescription(0).getLabel());
@@ -165,8 +173,12 @@ public class Facade {
         for (Driver d : drivers){
                 if(o.getExcursion() != null &&
                         o.getExcursion().getDriver() != null &&
-                        o.getExcursion().getDriver().getLogin().equals(d.getLogin()))
-                    res.add(d.getLogin() + "(Your driver)");
+                        o.getExcursion().getDriver().getLogin().equals(d.getLogin())){
+                    if (d.isAgree() == false)
+                        res.add(d.getLogin() + "(Sent offer)");
+                    else
+                        res.add(d.getLogin() + "(Your driver)");
+                }
                 else if(d.isFree())
                     res.add(d.getLogin() + "(Free)");
                 else
@@ -197,17 +209,54 @@ public class Facade {
         rep.updateDrivers();
     }
 
+    public int sendOfferToDriver(String org, String driver,
+                                  int price) throws Exception {
+        Organizator o = getOrg(org);
+        Driver d = getDriver(driver);
+        int status = o.sendOfferToDriver(d, price);
+        rep.update();
+        return status;
+    }
+
+    public String getDriverOffers(String driver) throws Exception {
+        Driver d = getDriver(driver);
+        int price = d.getGivenPrice();
+        String res = "";
+        if (price == -1)
+            res = "No offers";
+        else{
+            res += "You have an offer to excursion ";
+            res += d.getExcursion().getName();
+            res += "\nPrice: ";
+            res += d.getGivenPrice();
+        }
+        return res;
+    }
+
+    public void setDriverAgree(String driver) throws Exception{
+        Driver d = getDriver(driver);
+        d.agree();
+        rep.update();
+    }
+
+    public void setDriverdisagree(String driver) throws Exception{
+        Driver d = getDriver(driver);
+        d.disagree();
+        rep.update();
+    }
+
     public void addExcursion(String org, String name) throws Exception {
         Organizator o = getOrg(org);
         o.createExcursion(name);
         rep.update();
     }
 
-    public void addUserToExcursion(String user, String excName) throws Exception {
+    public int addUserToExcursion(String user, String excName) throws Exception {
         User u = getUser(user);
         Excursion e = getExc(excName);
-        e.addUser(u);
+        int status = e.addUser(u);
         rep.update();
+        return status;
     }
 
     public void delUserFromExcursion(String user, String excName) throws Exception {
@@ -227,6 +276,33 @@ public class Facade {
             }
         }
         return res;
+    }
+
+    public void updateOrg(String org) throws Exception {
+        Organizator o = getOrg(org);
+        if (o.getExcursion().getDriver() != null){
+            Excursion e = o.getExcursion();
+            Driver d = o.getExcursion().getDriver();
+            Driver newDriver = getDriver(d.getLogin());
+            if(newDriver.isAgree()){
+                newDriver.setDriverBusy(e);
+                e.setDriver(newDriver);
+            }
+        }
+    }
+
+    public int beginExcursion(String org) throws Exception {
+        Organizator o = getOrg(org);
+        int status = o.beginExcursion();
+        rep.update();
+        return status;
+    }
+
+    public int endExcursion(String org) throws Exception {
+        Organizator o = getOrg(org);
+        o.endExcursion();
+        rep.update();
+        return 0;
     }
 
     private Repository rep;

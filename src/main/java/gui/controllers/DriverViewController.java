@@ -73,4 +73,8 @@ public class DriverViewController {
         f.checkVehicle(log);
         vehicle.setText(f.getDriversVehicleInfo(log));
     }
+
+    public void clickOnUpdate(ActionEvent actionEvent) throws Exception {
+        ExSystem.showOfferView(log);
+    }
 }
