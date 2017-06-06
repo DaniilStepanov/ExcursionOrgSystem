@@ -46,8 +46,18 @@ public class OrganizatorMapper implements UserMapperInterface<Organizator> {
         insertStatement.setInt(1, uid);
         insertStatement.executeUpdate();
         org.setNewUID(uid);
-        orgs.add(org);
+        addToOrgs(org);
         return true;
+    }
+
+    public void addToOrgs(Organizator o){
+        for (int i = 0; i < orgs.size(); ++i){
+            if (orgs.get(i).getLogin().equals(o.getLogin())){
+                orgs.set(i, o);
+                return;
+            }
+        }
+        orgs.add(o);
     }
 
     public ArrayList<Excursion> getAllExcursions() throws SQLException{
@@ -58,7 +68,8 @@ public class OrganizatorMapper implements UserMapperInterface<Organizator> {
         while(rs.next()) {
             int id = rs.getInt("id");
             Organizator o = findByID(id);
-            result.add(o.getExcursion());
+            if(o.getExcursion() != null)
+                result.add(o.getExcursion());
         }
         return result;
     }
@@ -107,8 +118,14 @@ public class OrganizatorMapper implements UserMapperInterface<Organizator> {
         Organizator o = UserFactory.createOrganizator(u.getLogin(), u.getMoney(), u.getUID());
         int excID = userMapper.getExcursionID(o);
         Excursion e = excursionMapper.findByID(excID);
-        o.setExcursion(e);
-        orgs.add(o);
+        if (e != null){
+            for(User us : e.getUsers()){
+                if(us.getLogin() == o.getLogin())
+                    e.getUsers().remove(us);
+            }
+            o.setExcursion(e);
+        }
+        addToOrgs(o);
         return o;
     }
 
@@ -119,6 +136,8 @@ public class OrganizatorMapper implements UserMapperInterface<Organizator> {
     public void update(Organizator item) throws SQLException {
         userMapper.update(item);
         if(item.getExcursion() != null){
+            System.out.println("Update excursion " + item.getExcursion().getName());
+            System.out.println("Status = " + item.getExcursion().getStatus());
             excursionMapper.update(item.getExcursion());
         }
     }
@@ -138,10 +157,10 @@ public class OrganizatorMapper implements UserMapperInterface<Organizator> {
     }
 
     public Organizator findByLogin(String login) throws SQLException {
-        for(int i = 0; i < orgs.size(); ++i){
+        /*for(int i = 0; i < orgs.size(); ++i){
             if(orgs.get(i).getLogin().equals(login))
                 return orgs.get(i);
-        }
+        }*/
 
         User u = userMapper.findByLogin(login);
         String query = "SELECT * FROM ORGANIZATORS WHERE id = ?;";
@@ -155,9 +174,16 @@ public class OrganizatorMapper implements UserMapperInterface<Organizator> {
             return null;
         Organizator o = UserFactory.createOrganizator(u.getLogin(), u.getMoney(), u.getUID());
         int excID = userMapper.getExcursionID(o);
+        System.out.println("Get excursion " + excID + "" + login);
         Excursion e = excursionMapper.findByID(excID);
-        o.setExcursion(e);
-        orgs.add(o);
+        if (e != null){
+            for(User us : e.getUsers()){
+                if(us.getLogin() == o.getLogin())
+                    e.getUsers().remove(us);
+            }
+            o.setExcursion(e);
+        }
+        addToOrgs(o);
         return o;
     }
 }

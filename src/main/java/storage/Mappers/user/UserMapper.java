@@ -24,19 +24,29 @@ public class UserMapper implements UserMapperInterface<User> {
     }
 
     public ArrayList<User> findByExcursionID(int id) throws SQLException{
+        ArrayList<User> result = new ArrayList<User>();
         String query = "SELECT * FROM USERS WHERE excursionID = ?";
         PreparedStatement select = connection.prepareStatement(query);
         select.setInt(1, id);
         ResultSet rs = select.executeQuery();
-        ArrayList<User> users = new ArrayList<User>();
         while(rs.next()){
             int uid = rs.getInt("id");
             String login = rs.getString("login");
             int money = rs.getInt("money");
             User u = UserFactory.createUser(uid, login, money);
-            users.add(u);
+            result.add(u);
         }
-        return users;
+        return result;
+    }
+
+    public void addToUsers(User u){
+        for (int i = 0; i < users.size(); ++i){
+            if (users.get(i).getLogin().equals(u.getLogin())){
+                users.set(i, u);
+                return;
+            }
+        }
+        users.add(u);
     }
 
     public ArrayList<User> findByExcursionName(String name) throws SQLException{
@@ -75,16 +85,16 @@ public class UserMapper implements UserMapperInterface<User> {
             uid = (int) generatedKeys.getLong(1);
         }
         user.setNewUID(uid);
-        users.add(user);
+        addToUsers(user);
         return true;
     }
 
 
     public User findByID(int id) throws SQLException {
-        for(int i = 0; i < users.size(); ++i){
+        /*for(int i = 0; i < users.size(); ++i){
             if(users.get(i).getUID() == id)
                 return users.get(i);
-        }
+        }*/
 
         String query = "SELECT * FROM USERS WHERE id = ?;";
         PreparedStatement st = connection.prepareStatement(query);
@@ -96,7 +106,7 @@ public class UserMapper implements UserMapperInterface<User> {
         String login = rs.getString("login");
         int money = rs.getInt("money");
         User u = UserFactory.createUser(uid, login, money);
-        users.add(u);
+        addToUsers(u);
         return u;
     }
 
@@ -151,10 +161,10 @@ public class UserMapper implements UserMapperInterface<User> {
 
 
     public User findByLogin(String login) throws SQLException {
-        for(int i = 0; i < users.size(); ++i) {
+        /*for(int i = 0; i < users.size(); ++i) {
             if (users.get(i).getLogin().equals(login))
                 return users.get(i);
-        }
+        }*/
 
         String query = "SELECT * FROM USERS WHERE login = ?;";
         PreparedStatement st = connection.prepareStatement(query);
@@ -166,7 +176,7 @@ public class UserMapper implements UserMapperInterface<User> {
         String newlogin = rs.getString("login");
         int money = rs.getInt("money");
         User u = UserFactory.createUser(uid, newlogin, money);
-        users.add(u);
+        addToUsers(u);
         return u;
     }
 }

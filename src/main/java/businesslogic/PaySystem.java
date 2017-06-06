@@ -19,6 +19,10 @@ public class PaySystem {
         return r;
     }
 
+    public static Receipt getCreatedReceipt(int uid, Excursion e, int sum){
+        return new Receipt(uid, e, sum);
+    }
+
     public static Receipt getReceipt(Excursion e){
         for(Receipt rec : recps){
             if(rec.getExc() == e)

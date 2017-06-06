@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="472.0" prefWidth="552.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controllers.CreateExcursionViewController">
+   <children>
+      <TextField fx:id="minToursts" layoutX="202.0" layoutY="122.0" />
+      <TextField fx:id="maxTourists" layoutX="202.0" layoutY="194.0" />
+      <TextField fx:id="equipment" layoutX="202.0" layoutY="270.0" />
+      <Button layoutX="251.0" layoutY="411.0" mnemonicParsing="false" onAction="#addExcursionButtonClicked" prefHeight="25.0" prefWidth="51.0" text="OK" />
+      <Text layoutX="202.0" layoutY="111.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Min toursists" />
+      <Text layoutX="203.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Max toursits" />
+      <Text layoutX="202.0" layoutY="259.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Equpment" />
+      <Text layoutX="202.0" layoutY="337.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Departure date" />
+      <Text fx:id="error" layoutX="262.0" layoutY="347.0" strokeType="OUTSIDE" strokeWidth="0.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Text>
+      <DatePicker fx:id="departureDate" layoutX="203.0" layoutY="349.0" prefHeight="25.0" prefWidth="149.0" />
+      <Text layoutX="203.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" />
+      <TextField fx:id="name" layoutX="202.0" layoutY="64.0" />
+   </children>
+</AnchorPane>

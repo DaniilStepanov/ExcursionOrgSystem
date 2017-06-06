@@ -52,12 +52,12 @@ public class Excursion {
     }
 
     public int beginExcursion(){
+        if (driver.isAgree() == false)
+            return ErrorCodes.driverIsNotAgree;
         if (users.size() > maxTourists)
             return ErrorCodes.maxTourists;
         if (users.size() < minTourists)
             return ErrorCodes.minTourists;
-        if (driver.isAgree() == false)
-            return ErrorCodes.driverIsNotAgree;
         org.payToDriver(driver, driver.getGivenPrice());
         status = 2;
         return ErrorCodes.success;
@@ -65,8 +65,8 @@ public class Excursion {
 
     public int endExcursion(){
         status = 3;
-        driver.setDriverFree();
         canAddComments = true;
+        driver = null;
         return ErrorCodes.success;
     }
 
@@ -79,6 +79,7 @@ public class Excursion {
 
     public int setDriver(Driver d){
         driver = d;
+        status = 1;
         return ErrorCodes.success;
     }
 
@@ -109,7 +110,7 @@ public class Excursion {
             res += i + ". " + users.get(i).getLogin() + "\n";
         }
         res += "\n\n";
-        if (isPay) {
+        if (isPay && status != 3) {
             res += "Excursion is paid \n";
             res += rec.printReceiptInString();
         }
@@ -122,6 +123,8 @@ public class Excursion {
     public ArrayList<ExcursionObject> getExsursionObjects(){return objects;}
 
     public int addUser(User u){
+        if (status == 0)
+            return ErrorCodes.early;
         if(status > 1)
             return ErrorCodes.late;
         for (User us : users){
@@ -151,6 +154,7 @@ public class Excursion {
     public java.sql.Date getDepartureDate() { return departureDate; }
 
     public int getStatus() { return status; }
+
     public String getStringStatus() {
         switch (status){
             case 0:

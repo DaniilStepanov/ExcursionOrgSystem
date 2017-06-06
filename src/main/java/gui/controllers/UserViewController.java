@@ -85,4 +85,7 @@ public class UserViewController {
 
     private String log;
 
+    public void onUpdateClicked(ActionEvent actionEvent) throws Exception{
+        init(log);
+    }
 }

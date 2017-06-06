@@ -22,7 +22,7 @@ public class ExSystem extends Application{
     public void start(Stage stage) throws Exception{
         myStage = stage;
         //Init DB
-        Gateway g = new Gateway();
+        Gateway g = Gateway.getInstance();
         g.dropAll();
 
         //Start gui
@@ -100,6 +100,16 @@ public class ExSystem extends Application{
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+    }
+
+    public static void showCreateExcursionView(String login) throws Exception{
+        String fxmlFile = "/CreateExcursionView.fxml";
+        FXMLLoader loader = new FXMLLoader();
+        AnchorPane root = (AnchorPane) loader.load(ExSystem.class.getClass().getResourceAsStream(fxmlFile));
+        CreateExcursionViewController cevc = loader.getController();
+        cevc.init(login);
+        Scene scene = new Scene(root);
+        myStage.setScene(scene);
     }
 
 //    public static void main(String [] args) throws IOException, SQLException {

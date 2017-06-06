@@ -24,18 +24,20 @@ public class ReceiptMapper {
     }
 
     public Receipt findByExc(Excursion e) throws SQLException {
-        for (Receipt rec : recps){
-            if(rec.getExc().equals(e))
-                return rec;
-        }
+//        for (Receipt rec : recps){
+//            if(rec.getExc().equals(e))
+//                return rec;
+//        }
         String query = "SELECT * FROM receipts WHERE excID = ?;";
         PreparedStatement st = connection.prepareStatement(query);
         st.setInt(1, e.getUID());
         ResultSet rs = st.executeQuery();
 
         if (!rs.next()) return null;
-        Receipt r = PaySystem.getReceipt(e);
-        recps.add(r);
+        int sum = rs.getInt("sum");
+        int uid = rs.getInt("uid");
+        Receipt r = PaySystem.getCreatedReceipt(uid, e, sum);
+        //recps.add(r);
         return r;
     }
 

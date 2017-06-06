@@ -13,6 +13,8 @@ import com.sun.org.apache.xpath.internal.operations.Or;
 import storage.Repository;
 
 import java.awt.image.AreaAveragingScaleFilter;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
@@ -37,11 +39,10 @@ public class Facade {
     }
 
     public int getMoney(String user) throws Exception{
-        return getUser(user).getMoney();
-    }
-
-    public int getOrgMoney(String user) throws Exception{
-        return getOrg(user).getMoney();
+        User u = getUser(user);
+        System.out.println("Get money for user " + u.getLogin());
+        System.out.println("Money = " + u.getMoney());
+        return u.getMoney();
     }
 
     private User getUser(String name) throws Exception {
@@ -113,7 +114,6 @@ public class Facade {
         for (Excursion e : excs){
             if(e.getName().equals(excName)){
                 result.add(e.getName());
-                result.add("Min and Max tourists: " + e.getMinTourists() + " and " + e.getMaxTourists());
                 result.add("Free " + (e.getMaxTourists() - e.getUsers().size()) + " places\n");
                 result.add("Equipment: " + e.getEquipment());
                 result.add("Date: " + e.getDepartureDate());
@@ -129,8 +129,9 @@ public class Facade {
 
     public String getExcustionDescriptionForOrg(String login) throws Exception {
         Organizator o = getOrg(login);
-        if (o.getExcursion() != null)
+        if (o.getExcursion() != null){
             return o.getExcursion().printExcursionInStr();
+        }
         else
             return "None";
     }
@@ -194,12 +195,15 @@ public class Facade {
         rep.update();
     }
 
-    public void addExcursionObject(String org, String text) throws Exception {
+    public int addExcursionObject(String org, String text) throws Exception {
         Organizator o = getOrg(org);
+        if(o.getExcursion() == null)
+            return ErrorCodes.excursionIsNull;
         ExcursionObject eo = ExcursionBuilder.createExcursionObject();
         eo.addText(text, "");
         o.getExcursion().addExcursionObject(eo);
         rep.update();
+        return ErrorCodes.success;
     }
 
     public void setDriverToExc(String org, String driver) throws Exception {
@@ -235,8 +239,11 @@ public class Facade {
 
     public void setDriverAgree(String driver) throws Exception{
         Driver d = getDriver(driver);
+        System.out.println("Set driver " + d.getLogin() + " agree");
+        System.out.println(d.isAgree());
         d.agree();
-        rep.update();
+        System.out.println(d.isAgree());
+        rep.updateDriver(d);
     }
 
     public void setDriverdisagree(String driver) throws Exception{
@@ -245,10 +252,31 @@ public class Facade {
         rep.update();
     }
 
-    public void addExcursion(String org, String name) throws Exception {
+    public int addExcursion(String org, String name, String minTourists,
+                             String maxTourists, String equipment,
+                             LocalDate departureDate) throws Exception{
         Organizator o = getOrg(org);
         o.createExcursion(name);
-        rep.update();
+        Date d = java.sql.Date.valueOf(departureDate);
+        java.util.Date now = new java.util.Date();
+        if (now.compareTo(d) == 1)
+            return ErrorCodes.dateError;
+        try {
+            int min = Integer.parseInt(minTourists);
+            int max = Integer.parseInt(maxTourists);
+            if (max < min)
+                return ErrorCodes.minMaxTour;
+            o.getExcursion().setExcursionInfo(min, max, equipment, d, 0);
+            rep.update();
+            return ErrorCodes.success;
+        }
+        catch (NumberFormatException e){
+            return ErrorCodes.fieldString;
+        }
+    }
+
+    public void getInfoToExcursion(String org) throws Exception {
+
     }
 
     public int addUserToExcursion(String user, String excName) throws Exception {
@@ -279,9 +307,11 @@ public class Facade {
     }
 
     public void updateOrg(String org) throws Exception {
+        //update();
         Organizator o = getOrg(org);
         if (o.getExcursion().getDriver() != null){
             Excursion e = o.getExcursion();
+            System.out.println("num of users =" + e.getUsers().size());
             Driver d = o.getExcursion().getDriver();
             Driver newDriver = getDriver(d.getLogin());
             if(newDriver.isAgree()){
@@ -294,14 +324,22 @@ public class Facade {
     public int beginExcursion(String org) throws Exception {
         Organizator o = getOrg(org);
         int status = o.beginExcursion();
-        rep.update();
+        rep.updateDriver(o.getExcursion().getDriver());
+        rep.updateOrganizator(o);
         return status;
     }
 
-    public int endExcursion(String org) throws Exception {
-        Organizator o = getOrg(org);
-        o.endExcursion();
+    public void update() throws Exception {
         rep.update();
+    }
+
+    public int endExcursion(String org) throws Exception {
+        System.out.println("END excursion\n");
+        Organizator o = getOrg(org);
+        Driver d = o.getExcursion().getDriver();
+        o.endExcursion();
+        rep.updateDriver(d);
+        rep.updateOrganizator(o);
         return 0;
     }
 

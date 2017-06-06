@@ -21,7 +21,7 @@ public class Gateway {
     private static Gateway dataGateway;
     private static MysqlDataSource dataSource;
 
-    public Gateway() throws IOException {
+    private Gateway() throws IOException {
         dataSource = new MysqlDataSource();
         dataSource.setURL(url);
         dataSource.setUser(user);

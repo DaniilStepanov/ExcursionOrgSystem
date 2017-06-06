@@ -44,11 +44,9 @@ public class OrganizatorViewController {
     public void init(String login) throws Exception{
         log = login;
         welcome.setText("Welcome, " + login);
-        balance.setText("Your balance: " + f.getOrgMoney(login));
+        balance.setText("Your balance: " + f.getMoney(login));
         excName.setText(f.getOrganizatorExcursion(login));
         excDesc.setText(f.getExcustionDescriptionForOrg(login));
-        ok.setDisable(true);
-        ok2.setDisable(true);
         ok.setVisible(false);
         ok2.setVisible(false);
 
@@ -58,11 +56,12 @@ public class OrganizatorViewController {
 
     }
 
-    public void createExcursionClicked(ActionEvent actionEvent) {
-        addObj.setText("");
-        addObj.setVisible(true);
-        ok2.setVisible(true);
-        ok2.setDisable(false);
+    public void createExcursionClicked(ActionEvent actionEvent) throws Exception  {
+        ExSystem.showCreateExcursionView(log);
+//        addObj.setText("");
+//        addObj.setVisible(true);
+//        ok.setVisible(true);
+//        ok.setDisable(false);
     }
 
     public void setDriverClicked(ActionEvent actionEvent) throws Exception {
@@ -98,19 +97,23 @@ public class OrganizatorViewController {
     }
 
     public void okButtonClicked(ActionEvent actionEvent) throws Exception {
-        ok.setVisible(false);
-        ok.setDisable(true);
+        //ok.setVisible(false);
+        //ok.setDisable(true);
         addObj.setVisible(false);
-        f.addExcursionObject(log, addObj.getText());
+        ok.setVisible(false);
+        int st = f.addExcursionObject(log, addObj.getText());
+        if (st != 0)
+            ExSystem.showErrorView(st);
         init(log);
     }
 
     public void onOk2ButtonClicked(ActionEvent actionEvent) throws Exception {
-        ok2.setVisible(false);
-        ok2.setDisable(true);
-        addObj.setVisible(false);
-        f.addExcursion(log, addObj.getText());
-        init(log);
+//        ok2.setVisible(false);
+//        ok2.setDisable(true);
+//        addObj.setVisible(false);
+//        f.addExcursion(log, addObj.getText());
+//        System.out.println("LOL");
+//        init(log);
 
     }
 
@@ -118,14 +121,18 @@ public class OrganizatorViewController {
         int status = f.beginExcursion(log);
         if (status != 0)
             ExSystem.showErrorView(status);
-        startExcursion.setVisible(false);
-        endExcursion.setVisible(true);
-        init(log);
+        else{
+            startExcursion.setVisible(false);
+            endExcursion.setVisible(true);
+            init(log);
+        }
     }
 
     public void onEndExcursionClicked(ActionEvent actionEvent) throws Exception{
         startExcursion.setVisible(true);
         endExcursion.setVisible(false);
+        f.endExcursion(log);
+        init(log);
     }
 
     public void onUpdateButtonClicked(ActionEvent actionEvent) throws Exception{

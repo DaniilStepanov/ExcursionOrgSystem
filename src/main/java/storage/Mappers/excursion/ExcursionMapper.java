@@ -76,7 +76,6 @@ public class ExcursionMapper implements MapperInterface<Excursion> {
         if ( d == null)
             for (User u : users)
                 e.getUsers().add(u);
-
         else
             for (User u : users)
                 if(!d.getLogin().equals(u.getLogin()))
@@ -132,7 +131,7 @@ public class ExcursionMapper implements MapperInterface<Excursion> {
         }
         else {
             String query = "UPDATE EXCURSIONS SET " +
-                    "`isPaid` = ?, `minTourists` = ?, `maxTourists` = ?, `equipment` = ?, `departureDate` = ?, `canAddComments` = ? WHERE `id` = ?;";
+                    "`isPaid` = ?, `minTourists` = ?, `maxTourists` = ?, `equipment` = ?, `departureDate` = ?, `canAddComments` = ?, `status` = ? WHERE `id` = ?;";
             PreparedStatement st = connection.prepareStatement(query);
             st.setBoolean(1, item.isPaid());
             st.setInt(2, item.getMinTourists());
@@ -140,19 +139,22 @@ public class ExcursionMapper implements MapperInterface<Excursion> {
             st.setString(4, item.getEquipment());
             st.setDate(5, item.getDepartureDate());
             st.setBoolean(6, true);
-            st.setInt(7, item.getUID());
+            st.setInt(7, item.getStatus());
+            st.setInt(8, item.getUID());
             st.execute();
-            userMapper.updateExcursion(item.getUID(), item.getOrg().getUID());
-            if(item.getDriver() != null)
-                userMapper.updateExcursion(item.getUID(), item.getDriver().getUID());
-            if(item.getReceipt() != null)
-                receiptMapper.update(item.getReceipt());
-            for (int i = 0; i < item.getUsers().size(); ++i){
-                userMapper.updateExcursion(item.getUID(), item.getUsers().get(i).getUID());
-            }
-            for (int i = 0; i < item.getExsursionObjects().size(); ++i){
-                excursionObjectMapper.updateWithExcursion(item.getExsursionObjects().get(i),
-                        item.getUID());
+            if (item.getStatus() != 3){
+                userMapper.updateExcursion(item.getUID(), item.getOrg().getUID());
+                if(item.getDriver() != null)
+                    userMapper.updateExcursion(item.getUID(), item.getDriver().getUID());
+                if(item.getReceipt() != null)
+                    receiptMapper.update(item.getReceipt());
+                for (int i = 0; i < item.getUsers().size(); ++i){
+                    userMapper.updateExcursion(item.getUID(), item.getUsers().get(i).getUID());
+                }
+                for (int i = 0; i < item.getExsursionObjects().size(); ++i){
+                    excursionObjectMapper.updateWithExcursion(item.getExsursionObjects().get(i),
+                            item.getUID());
+                }
             }
         }
     }

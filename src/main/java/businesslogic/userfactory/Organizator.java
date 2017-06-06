@@ -33,7 +33,7 @@ public class Organizator extends User {
         if(excursion.getDriver() != null) {
             excursion.getDriver().setDriverFree();
         }
-        excursion = null;
+        excursion.endExcursion();
     }
 
     public int sendOfferToDriver(Driver d, int price){
@@ -47,6 +47,8 @@ public class Organizator extends User {
             return ErrorCodes.driverWIthoutVehicle;
         if (!d.getVehicle().isChecked())
             return ErrorCodes.driversVehicle;
+        if (d.getVehicle().getCapacity() < excursion.getMaxTourists())
+            return ErrorCodes.capacity;
         d.setGivenPrice(price);
         d.setExc(excursion);
         excursion.setDriver(d);

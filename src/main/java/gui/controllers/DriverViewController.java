@@ -42,7 +42,7 @@ public class DriverViewController {
         welcome.setText("Welcome, " + login);
         balance.setText("Your balance: " + f.getMoney(login));
         vehicle.setText(f.getDriversVehicleInfo(login));
-        yourExc.setText(yourExc.getText() + " " + f.getDriversExcursion(login));
+        yourExc.setText("Your excursion: " + f.getDriversExcursion(login));
         ArrayList<String> excs = f.getExcursionList();
         ObservableList<String> items = FXCollections.observableArrayList(excs);
         excList.setItems(items);
@@ -76,5 +76,9 @@ public class DriverViewController {
 
     public void clickOnUpdate(ActionEvent actionEvent) throws Exception {
         ExSystem.showOfferView(log);
+    }
+
+    public void onUpdateClicked(ActionEvent actionEvent) throws Exception {
+        init(log);
     }
 }

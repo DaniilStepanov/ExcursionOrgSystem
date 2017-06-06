@@ -39,5 +39,6 @@
       <Button layoutX="27.0" layoutY="421.0" mnemonicParsing="false" onAction="#addToExcursion" text="Add to excursion" />
       <Text fx:id="myExcs" layoutX="297.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" />
       <Button layoutX="157.0" layoutY="421.0" mnemonicParsing="false" onAction="#delFromExcursion" text="Del from excursion" />
+      <Button layoutX="122.0" layoutY="461.0" mnemonicParsing="false" onAction="#onUpdateClicked" text="Update" />
    </children>
 </AnchorPane>

@@ -18,6 +18,11 @@ public class ErrorCodes
     public static int minTourists = 10;
     public static int late = 11;
     public static int userAlreadyInExcursion = 12;
+    public static int fieldString = 13;
+    public static int dateError = 14;
+    public static int minMaxTour = 15;
+    public static int early = 16;
+    public static int capacity = 17;
 
     public static String getError(int num){
         switch (num){
@@ -45,6 +50,16 @@ public class ErrorCodes
                 return "You're late";
             case 12:
                 return "You're already in excursion";
+            case 13:
+                return "Tourists fields must be integer";
+            case 14:
+                return "Departure date must be in future";
+            case 15:
+                return "Max tourists less then min tourists";
+            case 16:
+                return "Not ready";
+            case 17:
+                return "Capacity is less then max tourists";
         }
         return "Error!";
     }

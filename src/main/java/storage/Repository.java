@@ -118,6 +118,14 @@ public class Repository {
         driverMapper.update();
     }
 
+    public void updateDriver(Driver d) throws SQLException {
+        driverMapper.update(d);
+    }
+
+    public void updateOrganizator(Organizator o) throws SQLException {
+        organizatorMapper.update(o);
+    }
+
     public ExcursionObject addExcursionObject(String label, String text) throws SQLException{
         ExcursionObject eo = ExcursionBuilder.createExcursionObject();
         eo.addText(label, text);

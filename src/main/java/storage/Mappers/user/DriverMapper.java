@@ -54,8 +54,19 @@ public class DriverMapper implements UserMapperInterface<Driver> {
         insertStatement.executeUpdate();
 
         d.setNewUID(uid);
-        drivers.add(d);
+
+        addToDrivers(d);
         return true;
+    }
+
+    public void addToDrivers(Driver d){
+        for (int i = 0; i < drivers.size(); ++i){
+            if (drivers.get(i).getLogin().equals(d.getLogin())){
+                drivers.set(i, d);
+                return;
+            }
+        }
+        drivers.add(d);
     }
 
     public Driver findByID(int id) throws SQLException {
@@ -83,7 +94,7 @@ public class DriverMapper implements UserMapperInterface<Driver> {
         Vehicle v = vehicleMapper.getDriversVehicle(d);
         if (v != null)
             d.addVehicle(v);
-        drivers.add(d);
+        addToDrivers(d);
         return d;
     }
 
@@ -108,12 +119,6 @@ public class DriverMapper implements UserMapperInterface<Driver> {
                 break;
             }
         }
-        userMapper.update(item);
-        if(item.getExcursion() != null)
-            userMapper.updateExcursion(item.getExcursion().getUID(), item.getUID());
-        else
-            userMapper.updateExcursion(-1, item.getUID());
-
         String query = "UPDATE drivers SET drivers.isFree = ?, drivers.givenPrice = ?," +
                 "drivers.isAgree = ? WHERE drivers.id = ?;";
         PreparedStatement st = connection.prepareStatement(query);
@@ -125,10 +130,16 @@ public class DriverMapper implements UserMapperInterface<Driver> {
         if(item.getVehicle() != null){
             vehicleMapper.addVehicle(item, item.getVehicle());
         }
+        userMapper.update(item);
+        if(item.getExcursion() != null)
+            userMapper.updateExcursion(item.getExcursion().getUID(), item.getUID());
+        else
+            userMapper.updateExcursion(-1, item.getUID());
     }
 
     public void update() throws SQLException {
         for (Driver d : drivers){
+            System.out.println("Update "  + d.getLogin() + d.isAgree());
             update(d);
         }
     }
@@ -143,15 +154,16 @@ public class DriverMapper implements UserMapperInterface<Driver> {
 
     public Driver getByExcursionID(int id) throws SQLException{
         ArrayList<User> users = userMapper.findByExcursionID(id);
-        for (int i = 0; i < users.size(); ++i){
+        /*for (int i = 0; i < users.size(); ++i){
             for (Driver d : drivers){
                 if(users.get(i).getUID() == d.getUID())
                     return d;
             }
-        }
+        }*/
         for (int i = 0; i < users.size(); ++i){
-            if(findByID(users.get(i).getUID()) != null)
-                return findByID(users.get(i).getUID());
+            Driver d = findByID(users.get(i).getUID());
+            if(d != null)
+                return d;
         }
         return null;
     }
@@ -177,7 +189,7 @@ public class DriverMapper implements UserMapperInterface<Driver> {
         Vehicle v = vehicleMapper.getDriversVehicle(d);
         if (v != null)
             d.addVehicle(v);
-        drivers.add(d);
+        addToDrivers(d);
         return d;
     }
 }
